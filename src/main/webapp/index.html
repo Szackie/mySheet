@@ -6,6 +6,7 @@
     <title>myForm</title>
     <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
           integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <style>
         #header {
@@ -39,6 +40,10 @@
             text-align:center;
             padding:5px;
         }
+        .remove-btn {
+            color: red;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -69,6 +74,7 @@
             <fieldset id="allForms">Dodane formatki:</fieldset>
         </div>
         <button id="liczbtn" class="pure-button pure-button-primary pure-u-1-4" style="float: right">liczbtn</button>
+        <div id="plainSolve"></div>
         <div id="footer">
             Copyright © szackie
         </div>
@@ -148,10 +154,10 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
         var listItem = document.createElement('li');
         listItem.textContent = listItem.textContent = waste.width + ' x ' + waste.depth + ', ilość: ' + waste.quantity;;
 
-        // Create a button element for removing the form
-        var removeButton = document.createElement('button');
-        removeButton.textContent = 'Usuń';
-        removeButton.classList.add('remove-btn');  //??????????????????
+        // Create an image element for the remove button
+        var removeButton = document.createElement('img');
+        removeButton.src = '/x.png';
+        removeButton.classList.add('remove-btn');
 
         // Add event listener to the remove button
         removeButton.addEventListener('click', function() {
@@ -225,10 +231,10 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
         var listItem = document.createElement('li');
         listItem.textContent = listItem.textContent = form.width + ' x ' + form.depth + ', ilość: ' + form.quantity;;
 
-        // Create a button element for removing the form
-        var removeButton = document.createElement('button');
-        removeButton.textContent = 'Usuń';
-        removeButton.classList.add('remove-btn');  //??????????????????
+        // Create an image element for the remove button
+        var removeButton = document.createElement('img');
+        removeButton.src = 'x.png';
+        removeButton.classList.add('remove-btn');
 
         // Add event listener to the remove button
         removeButton.addEventListener('click', function() {
@@ -263,17 +269,46 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
 });
 
 });
+//SOLVE
 
 
-    document.getElementById('liczbtn').addEventListener('click', function(event) {
+document.getElementById('liczbtn').addEventListener('click', function(event) {
         event.preventDefault(); // Prevent the form from submitting normally
 
-        // Hide the initialForm
-        document.getElementById('initialForm').style.display = 'none';
+        // Get the value from the formatkaText input field
+        var formatkaTextValue = document.getElementById('formatkaText').value;
 
-        // Show the solutionForm
-        document.getElementById('solutionForm').style.display = 'block';
-    });
+
+        // Make a get request to the backend endpoint
+        fetch('http://localhost:8080/api/solve', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(function(response) {
+    if (response.ok) {
+        return response.text(); // Odczytaj odpowiedź jako zwykły tekst
+    } else {
+        throw new Error('Błąd: ' + response.status);
+    }
+})
+.then(function(responseText) {
+    // Wyświetl odczytany zwykły tekst w polu plainSolve
+    var plainSolveDiv = document.getElementById('plainSolve');
+    plainSolveDiv.textContent = responseText;
+})
+.catch(function(error) {
+    // Obsługa błędu
+    console.error(error);
+
+    // Wyświetl odpowiedni komunikat na stronie
+    var errorDiv = document.createElement('div');
+    errorDiv.textContent = 'Wystąpił błąd podczas komunikacji z serwerem.';
+    document.body.appendChild(errorDiv);
+});
+});
+
 </script>
 </body>
 </html>

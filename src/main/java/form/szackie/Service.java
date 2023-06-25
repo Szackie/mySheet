@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Service {
+public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY
     private List<Form> availableForms;
     private List<Form> desiredForms;
 

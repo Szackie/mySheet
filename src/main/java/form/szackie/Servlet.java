@@ -16,7 +16,7 @@ public class Servlet {
     List<Form> availableForms = new ArrayList<>();
     List<Form> formsToCreate = new ArrayList<>();
 
-    Service service=new Service(availableForms,formsToCreate);
+    Service service;
 //chcę, żeby Solver zwracał cały output, czyli:
 //    1. listę wykonanych detali (List<Form>)
 //    2. listę pozostałych po cięciu ścinek (List<Form>)
@@ -36,6 +36,7 @@ public class Servlet {
     @PostMapping("/scinka")
     ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
         String str = wasteText.get("name");
+        service=new Service(availableForms,formsToCreate);
         List<Form> newWastes = service.tokenizer(str, 2);
         availableForms.addAll(newWastes);
         return ResponseEntity.ok(availableForms);
@@ -60,6 +61,7 @@ public class Servlet {
     @PostMapping("/formatka")
     ResponseEntity<List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
         String str = formText.get("name");
+        service=new Service(availableForms,formsToCreate);
         List<Form> newForms = service.tokenizer(str, 1);
         formsToCreate.addAll(newForms);
         return ResponseEntity.ok(formsToCreate);
@@ -76,6 +78,14 @@ public class Servlet {
             }
         }
         return ResponseEntity.ok(formsToCreate);
+    }
+    @GetMapping("/solve")
+
+    public ResponseEntity<String> solution(){
+        service=new Service(availableForms,formsToCreate);
+        var result = service.solve();
+
+        return ResponseEntity.ok(result);    //to się sfetchuje i wyśle do frontendu. dodatkowo może jakiś raport do pobrania, czy coś? albo może nie.
     }
 /*
     @GetMapping// to musi być kiedy chcę wyświetlić listę ???? przemyśl
