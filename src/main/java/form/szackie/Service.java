@@ -19,10 +19,10 @@ public class Service {
         Form secondWaste;
         List<Form> list = new ArrayList<>();
 
-        double currDepth = existingForm.getDepth();
-        double dessDepth = formToCreate.getDepth();
-        double currWidth = existingForm.getWidth();
-        double dessWidth = formToCreate.getWidth();
+       int currDepth = existingForm.getDepth();
+       int dessDepth = formToCreate.getDepth();
+       int currWidth = existingForm.getWidth();
+       int dessWidth = formToCreate.getWidth();
 
         if (currDepth >= dessDepth && currWidth >= dessWidth) { //sprawdzam, czy się zmieści
             if((((currWidth +6)%(dessWidth +6))*((currDepth +6)%(dessDepth +6)))>=(((currWidth +6)%(dessDepth +6))*((currDepth +6)%(dessWidth +6))))//jeśli jest opcja ułożenia inaczej, to ma ułożyć tak, żeby zostało jaknajmniej odpadu

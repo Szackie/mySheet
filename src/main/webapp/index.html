@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>myForm</title>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
+          integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">
+
+    <style>
+        #header {
+            background-color:black;
+            color:white;
+            text-align:center;
+            padding:5px;
+        }
+        #nav {
+            line-height: 40px;
+            background-color:#eeeeee;
+            height:300px;
+            width:150px;
+            float:left;
+            padding:5px;
+        }
+        #waste {
+            width:350px;
+            float:left;
+            padding:10px;
+        }
+        #newform {
+            width:450px;
+            float:left;
+            padding:10px;
+        }
+        #footer {
+            background-color:black;
+            color:white;
+            clear:both;
+            text-align:center;
+            padding:5px;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <form id="initialForm">
+        <div id="header">
+            <h1>Kalkulator Formatek</h1>
+        </div>
+        <div id="nav">
+            1.Wklej ścinki<br>
+            2.Dodaj detale+ilość<br>
+            w formacie:<br>
+            szer. dł. ilość<br>
+            (oddzielone spacją)<br>
+            3.Tnij
+        </div>
+        <div id="waste">
+            <h1>Ścinki</h1>
+            <input id="scinkaText" class="pure-input-rounded pure-u-1" name="name" placeholder="scinkaText">
+        </div>
+        <div id="newform">
+            <h1>Formatki</h1>
+            <input id="formatkaText" class="pure-input-rounded pure-u-1" name="name" placeholder="formatkaText">
+            <button id="addformatkabtn" class="pure-button pure-button-primary pure-u-1">addformatkabtn</button>
+            <fieldset id="allForms">Dodane formatki:</fieldset>
+        </div>
+        <button id="liczbtn" class="pure-button pure-button-primary pure-u-1-4" style="float: right">liczbtn</button>
+        <div id="footer">
+            Copyright © szackie
+        </div>
+    </form>
+
+    <form id="solutionForm" style="display: none;">
+        <div id="header">
+            <h1>Kalkulator Formatek</h1>
+        </div>
+        <div id="nav">
+            1.Wklej ścinki<br>
+            2.Dodaj detale+ilość<br>
+            w formacie:<br>
+            szer. dł. ilość<br>
+            (oddzielone spacją)<br>
+            3.Tnij
+        </div>
+        <div id="waste">
+            <h1>Nowe ścinki</h1>
+
+        </div>
+        <div id="newform">
+            <h1>Wykonane formatki</h1>
+            <fieldset>
+                <input id="productText" class="pure-input-rounded pure-input-2-3" placeholder="productText">
+                <button id="addNewForm" class="pure-button pure-button-primary">addNewForm</button>
+            </fieldset>
+            <fieldset>NowaFormatka
+                <button id="edit" class="pure-button pure-button-primary">edytuj</button>
+                <!--                <check-box>//checkbox priorytet//</check-box>-->
+            </fieldset>
+        </div>
+        <div id="footer">
+            Copyright © szackie
+        </div>
+    </form>
+</main>
+<script>
+
+    document.getElementById('addformatkabtn').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Get the value from the formatkaText input field
+        var formatkaTextValue = document.getElementById('formatkaText').value;
+
+        // Create an object with the data to be sent
+        var data = {
+            formatkaText: formatkaTextValue.value
+        };
+
+        // Make a POST request to the backend endpoint
+        fetch('http://localhost:8080/api/formatka', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    name: formatkaText.value
+                })
+        })
+        .then(function(response) {
+            if (response.ok) {
+                return response.json(); // Parse the response as JSON
+            } else {
+                throw new Error('Error: ' + response.status);
+            }
+        })
+.then(function(responseData) {
+    // Get the allForms fieldset
+    var allFormsFieldset = document.getElementById('allForms');
+        allFormsFieldset.innerHTML = '';
+
+// Create a new list element for each form received from the backend
+    responseData.forEach(function(form) {
+        var listItem = document.createElement('li');
+        listItem.textContent = listItem.textContent = form.id + '. ' + form.width + ' x ' + form.depth + ', ilość: ' + form.quantity;;
+
+        // Create a button element for removing the form
+        var removeButton = document.createElement('button');
+        removeButton.textContent = 'Usuń';
+        removeButton.classList.add('remove-btn');  //??????????????????
+
+        // Add event listener to the remove button
+        removeButton.addEventListener('click', function() {
+            // Remove the form from the frontend list
+            listItem.remove();
+
+            // Send a DELETE request to the backend to remove the form
+            fetch('http://localhost:8080/api/formatka/' + form.id, {
+                method: 'DELETE'
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    return response.json(); // Parse the response as JSON
+                } else {
+                    throw new Error('Error: ' + response.status);
+                }
+            })
+            .then(function(responseData) {
+                // Handle the response data if needed
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+        });
+
+        // Append the remove button to the list item
+        listItem.appendChild(removeButton);
+
+        // Append the list item to the allForms fieldset
+        allFormsFieldset.appendChild(listItem);
+    });
+});
+
+});
+
+
+    document.getElementById('liczbtn').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Hide the initialForm
+        document.getElementById('initialForm').style.display = 'none';
+
+        // Show the solutionForm
+        document.getElementById('solutionForm').style.display = 'block';
+    });
+</script>
+</body>
+</html>
