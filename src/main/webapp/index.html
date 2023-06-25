@@ -52,13 +52,15 @@
             1.Wklej ścinki<br>
             2.Dodaj detale+ilość<br>
             w formacie:<br>
-            szer. dł. ilość<br>
+            szer. dł. ilość szt.<br>
             (oddzielone spacją)<br>
             3.Tnij
         </div>
         <div id="waste">
             <h1>Ścinki</h1>
             <input id="scinkaText" class="pure-input-rounded pure-u-1" name="name" placeholder="scinkaText">
+            <button id="addscinkabtn" class="pure-button pure-button-primary pure-u-1">addscinkabtn</button>
+            <fieldset id="allWastes">Dodane ścinki</fieldset>
         </div>
         <div id="newform">
             <h1>Formatki</h1>
@@ -104,7 +106,90 @@
         </div>
     </form>
 </main>
+
+
+
+
+
+
 <script>
+//ŚCINKI
+
+document.getElementById('addscinkabtn').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Get the value from the formatkaText input field
+        var scinkaTextValue = document.getElementById('scinkaText').value;
+
+        // Make a POST request to the backend endpoint
+        fetch('http://localhost:8080/api/scinka', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                    name: scinkaTextValue
+                })
+        })
+        .then(function(response) {
+            if (response.ok) {
+                return response.json(); // Parse the response as JSON
+            } else {
+                throw new Error('Error: ' + response.status);
+            }
+        })
+.then(function(responseData) {
+    // Get the allForms fieldset
+    var allWasteFieldset = document.getElementById('allWastes');
+        allWasteFieldset.innerHTML = '';
+
+// Create a new list element for each form received from the backend
+    responseData.forEach(function(waste) {
+        var listItem = document.createElement('li');
+        listItem.textContent = listItem.textContent = waste.width + ' x ' + waste.depth + ', ilość: ' + waste.quantity;;
+
+        // Create a button element for removing the form
+        var removeButton = document.createElement('button');
+        removeButton.textContent = 'Usuń';
+        removeButton.classList.add('remove-btn');  //??????????????????
+
+        // Add event listener to the remove button
+        removeButton.addEventListener('click', function() {
+            // Remove the form from the frontend list
+            listItem.remove();
+
+            // Send a DELETE request to the backend to remove the form
+            fetch('http://localhost:8080/api/scinka/' + waste.id, {
+                method: 'DELETE'
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    return response.json(); // Parse the response as JSON
+                } else {
+                    throw new Error('Error: ' + response.status);
+                }
+            })
+            .then(function(responseData) {
+                // Handle the response data if needed
+            })
+            .catch(function(error) {
+                console.error(error);
+            });
+        });
+
+        // Append the remove button to the list item
+        listItem.appendChild(removeButton);
+
+        // Append the list item to the allForms fieldset
+        allWasteFieldset.appendChild(listItem);
+    });
+});
+
+});
+
+
+//FORMATKI
+
 
     document.getElementById('addformatkabtn').addEventListener('click', function(event) {
         event.preventDefault(); // Prevent the form from submitting normally
@@ -112,10 +197,6 @@
         // Get the value from the formatkaText input field
         var formatkaTextValue = document.getElementById('formatkaText').value;
 
-        // Create an object with the data to be sent
-        var data = {
-            formatkaText: formatkaTextValue.value
-        };
 
         // Make a POST request to the backend endpoint
         fetch('http://localhost:8080/api/formatka', {
@@ -124,7 +205,7 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                    name: formatkaText.value
+                    name: formatkaTextValue
                 })
         })
         .then(function(response) {
@@ -142,7 +223,7 @@
 // Create a new list element for each form received from the backend
     responseData.forEach(function(form) {
         var listItem = document.createElement('li');
-        listItem.textContent = listItem.textContent = form.id + '. ' + form.width + ' x ' + form.depth + ', ilość: ' + form.quantity;;
+        listItem.textContent = listItem.textContent = form.width + ' x ' + form.depth + ', ilość: ' + form.quantity;;
 
         // Create a button element for removing the form
         var removeButton = document.createElement('button');

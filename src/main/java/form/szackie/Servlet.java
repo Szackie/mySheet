@@ -9,13 +9,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/formatka")
+@RequestMapping("/api")
 public class Servlet {
 
-    Service service;
+
     List<Form> availableForms = new ArrayList<>();
     List<Form> formsToCreate = new ArrayList<>();
 
+    Service service=new Service(availableForms,formsToCreate);
 //chcę, żeby Solver zwracał cały output, czyli:
 //    1. listę wykonanych detali (List<Form>)
 //    2. listę pozostałych po cięciu ścinek (List<Form>)
@@ -30,20 +31,50 @@ public class Servlet {
     // ( dostanie to z JSONa(też z frontendu(część z excela, druga część wpisywana w okienko(może w formacie:
     // , i chcę, żeby po każdym dodaniu serii elementów do wykonania, wyświetlała się
     // dana formatka w formacie: *width* x *depth* liczba sztuk: *ilość* z możliwością edycji bądź usunięcia)))
+//ŚCINKI
 
-    @PostMapping
-    ResponseEntity <List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
-        String str = (String) formText.get("name");
-        Form newForm = new Form(str);
-        System.out.println(newForm.toString());
-        formsToCreate.add(newForm);
+    @PostMapping("/scinka")
+    ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
+        String str = wasteText.get("name");
+        List<Form> newWastes = service.tokenizer(str, 2);
+        availableForms.addAll(newWastes);
+        return ResponseEntity.ok(availableForms);
+    }
+
+    @DeleteMapping("/scinka/{id}")
+    ResponseEntity<List<Form>> removeWaste(@PathVariable int id) {
+        if (formsToCreate == null)
+            return ResponseEntity.notFound().build();
+        for (int i = 0; i < availableForms.size(); i++) {
+            if (availableForms.get(i).getId() == id) {
+                availableForms.remove(i);
+                break;
+            }
+        }
+        return ResponseEntity.ok(availableForms);
+    }
+
+//FORMATKI
+
+
+    @PostMapping("/formatka")
+    ResponseEntity<List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
+        String str = formText.get("name");
+        List<Form> newForms = service.tokenizer(str, 1);
+        formsToCreate.addAll(newForms);
         return ResponseEntity.ok(formsToCreate);
     }
 
-    @DeleteMapping("/{id}")
-        // PONIŻEJ MOŻE BYĆ INTEGER, ZAMIAST INT
-    ResponseEntity<List<Form>> removeForm(@PathVariable int id){
-        formsToCreate.remove(id-1);
+    @DeleteMapping("/formatka/{id}")
+    ResponseEntity<List<Form>> removeForm(@PathVariable int id) {
+        if (formsToCreate == null)
+            return ResponseEntity.notFound().build();
+        for (int i = 0; i < formsToCreate.size(); i++) {
+            if (formsToCreate.get(i).getId() == id) {
+                formsToCreate.remove(i);
+                break;
+            }
+        }
         return ResponseEntity.ok(formsToCreate);
     }
 /*
