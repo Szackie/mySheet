@@ -81,11 +81,10 @@ public class Servlet {
     }
     @GetMapping("/solve")
 
-    public ResponseEntity<String> solution(){
+    public ResponseEntity<Service> solution(){
         service=new Service(availableForms,formsToCreate);
         var result = service.solve();
-
-        return ResponseEntity.ok(result);    //to się sfetchuje i wyśle do frontendu. dodatkowo może jakiś raport do pobrania, czy coś? albo może nie.
+        return ResponseEntity.ok(result);
     }
 /*
     @GetMapping// to musi być kiedy chcę wyświetlić listę ???? przemyśl

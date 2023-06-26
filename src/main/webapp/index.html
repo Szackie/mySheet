@@ -24,15 +24,17 @@
             padding:5px;
         }
         #waste {
-            width:350px;
+
+            width:600px;
             float:left;
             padding:10px;
         }
         #newform {
-            width:450px;
+            width:600px;
             float:left;
             padding:10px;
         }
+
         #footer {
             background-color:black;
             color:white;
@@ -44,34 +46,44 @@
             color: red;
             cursor: pointer;
         }
+        #allWastes, #allNewWastes {
+  display: inline-block;
+  vertical-align: top;
+  width: 50%;
+}
     </style>
 </head>
 
 <body>
 <main>
+
     <form id="initialForm">
         <div id="header">
             <h1>Kalkulator Formatek</h1>
         </div>
-        <div id="nav">
+        <!-- <div id="nav">
             1.Wklej ścinki<br>
             2.Dodaj detale+ilość<br>
             w formacie:<br>
             szer. dł. ilość szt.<br>
             (oddzielone spacją)<br>
             3.Tnij
-        </div>
+        </div> -->
         <div id="waste">
             <h1>Ścinki</h1>
             <input id="scinkaText" class="pure-input-rounded pure-u-1" name="name" placeholder="scinkaText">
             <button id="addscinkabtn" class="pure-button pure-button-primary pure-u-1">addscinkabtn</button>
+
             <fieldset id="allWastes">Dodane ścinki</fieldset>
+            <fieldset id="allNewWastes">ścinki po cięciu</fieldset>
+
         </div>
         <div id="newform">
             <h1>Formatki</h1>
             <input id="formatkaText" class="pure-input-rounded pure-u-1" name="name" placeholder="formatkaText">
             <button id="addformatkabtn" class="pure-button pure-button-primary pure-u-1">addformatkabtn</button>
             <fieldset id="allForms">Dodane formatki:</fieldset>
+            <fieldset id="allNewForms">Otrzymane formatki:</fieldset>
         </div>
         <button id="liczbtn" class="pure-button pure-button-primary pure-u-1-4" style="float: right">liczbtn</button>
         <div id="plainSolve"></div>
@@ -80,43 +92,7 @@
         </div>
     </form>
 
-    <form id="solutionForm" style="display: none;">
-        <div id="header">
-            <h1>Kalkulator Formatek</h1>
-        </div>
-        <div id="nav">
-            1.Wklej ścinki<br>
-            2.Dodaj detale+ilość<br>
-            w formacie:<br>
-            szer. dł. ilość<br>
-            (oddzielone spacją)<br>
-            3.Tnij
-        </div>
-        <div id="waste">
-            <h1>Nowe ścinki</h1>
-
-        </div>
-        <div id="newform">
-            <h1>Wykonane formatki</h1>
-            <fieldset>
-                <input id="productText" class="pure-input-rounded pure-input-2-3" placeholder="productText">
-                <button id="addNewForm" class="pure-button pure-button-primary">addNewForm</button>
-            </fieldset>
-            <fieldset>NowaFormatka
-                <button id="edit" class="pure-button pure-button-primary">edytuj</button>
-                <!--                <check-box>//checkbox priorytet//</check-box>-->
-            </fieldset>
-        </div>
-        <div id="footer">
-            Copyright © szackie
-        </div>
-    </form>
 </main>
-
-
-
-
-
 
 <script>
 //ŚCINKI
@@ -273,42 +249,55 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
 
 
 document.getElementById('liczbtn').addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent the form from submitting normally
+    event.preventDefault(); // Prevent the form from submitting normally
 
-        // Get the value from the formatkaText input field
-        var formatkaTextValue = document.getElementById('formatkaText').value;
+    // Get the value from the formatkaText input field
+    var formatkaTextValue = document.getElementById('formatkaText').value;
 
+    // Make a GET request to the backend endpoint
+    fetch('http://localhost:8080/api/solve', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+    .then(function(response) {
+        if (response.ok) {
+            return response.json(); // Parse the response as JSON
+        } else {
+            throw new Error('Błąd: ' + response.status);
+        }
+    })
+    .then(function(responseData) {
+        // Get the allForms fieldset
+        var allNewFormsFieldset = document.getElementById('allNewForms');
+        var allNewWastesFieldset = document.getElementById('allNewWastes');
+        allNewFormsFieldset.innerHTML = '';
+        allNewWastesFieldset.innerHTML = '';
 
-        // Make a get request to the backend endpoint
-        fetch('http://localhost:8080/api/solve', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        .then(function(response) {
-    if (response.ok) {
-        return response.text(); // Odczytaj odpowiedź jako zwykły tekst
-    } else {
-        throw new Error('Błąd: ' + response.status);
-    }
-})
-.then(function(responseText) {
-    // Wyświetl odczytany zwykły tekst w polu plainSolve
-    var plainSolveDiv = document.getElementById('plainSolve');
-    plainSolveDiv.textContent = responseText;
-})
-.catch(function(error) {
-    // Obsługa błędu
-    console.error(error);
+        // Create new list elements for new forms and new wastes received from the backend
+        responseData.newWastesList.forEach(function(newWaste) {
+            var newWastelistItem = document.createElement('li');
+            newWastelistItem.textContent = newWaste.width + ' x ' + newWaste.depth ;
+            allNewWastesFieldset.appendChild(newWastelistItem);
+        });
 
-    // Wyświetl odpowiedni komunikat na stronie
-    var errorDiv = document.createElement('div');
-    errorDiv.textContent = 'Wystąpił błąd podczas komunikacji z serwerem.';
-    document.body.appendChild(errorDiv);
+        responseData.newFormsList.forEach(function(newForm) {
+            var newFormlistItem = document.createElement('li');
+            newFormlistItem.textContent = newForm.width + ' x ' + newForm.depth + ', ilość: ' + newForm.quantity;
+            allNewFormsFieldset.appendChild(newFormlistItem);
+        });
+    })
+    .catch(function(error) {
+        // Handle the error
+        console.error(error);
+
+        // Display an error message on the page
+        var errorDiv = document.createElement('div');
+        errorDiv.textContent = 'Wystąpił błąd podczas komunikacji z serwerem.';
+        document.body.appendChild(errorDiv);
+    });
 });
-});
-
 </script>
 </body>
 </html>

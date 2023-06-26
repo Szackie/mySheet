@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY
-    private List<Form> availableForms;
-    private List<Form> desiredForms;
+public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
+    private List<Form> newWastesList;
+    private List<Form> newFormsList;
 
     /**
      * Check if it possible to create new form from existing form. If its not, returns null
@@ -55,37 +53,38 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY
         return formatka;
     }
 
-    public String solve() {
+    public Service solve() {
         String result = "Możesz wykonać ";
 
         //sort() --sortuj wg powierzchi(żeby sprawdzało najpierw największe detale od najmniejszych ścinek)
         //ustaw szerokości -- tak żeby zawsze krótszy bok był szerokością!!
-        for (int z = 0; z < availableForms.size(); z++)
-            availableForms.set(z, sort(availableForms.get(z)));
-        for (int z = 0; z < desiredForms.size(); z++)
-            desiredForms.set(z, sort(desiredForms.get(z)));
+        for (int z = 0; z < newWastesList.size(); z++)
+            newWastesList.set(z, sort(newWastesList.get(z)));
+        for (int z = 0; z < newFormsList.size(); z++)
+            newFormsList.set(z, sort(newFormsList.get(z)));
 
 
-        for (int j = 0; j < desiredForms.size(); j++) {
+        for (int j = 0; j < newFormsList.size(); j++) {
             int i = 0;
             int quantity = 0;
-            while (i < availableForms.size() && quantity < desiredForms.get(j).getQuantity()) {
-                List<Form> temp = fitsInForm(availableForms.get(i), desiredForms.get(j));
+            while (i < newWastesList.size() && quantity < newFormsList.get(j).getQuantity()) {
+                List<Form> temp = fitsInForm(newWastesList.get(i), newFormsList.get(j));
                 if (temp != null) {
-                    availableForms.remove(i);
+                    newWastesList.remove(i);
                     i--;
                     quantity++;
 
                     for (int k = 0; k < 2; k++) {
                         if (temp.get(k).getWidth() >= 6 && temp.get(k).getDepth() >= 6)
-                            availableForms.add(temp.get(k));
+                            newWastesList.add(temp.get(k));
                     }
                 }
 
 
                 i++;
             }
-            result += "\ndetal: " + desiredForms.get(j).toString() + ", ilość: " + quantity;
+            result += "\ndetal: " + newFormsList.get(j).toString() + ", ilość: " + quantity;
+            newFormsList.get(j).setQuantity(quantity);
         }
 //        while (index < dlugosc listy desiredForms)
 //
@@ -95,32 +94,34 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY
 //        cutSuitableForms dodaj do availableForms
 //    }
         result += "\n Pozostałe ścinki: ";
-        for (int i = 0; i < availableForms.size(); i++) {
-            result += "\n " + availableForms.get(i).getWidth() + " " + availableForms.get(i).getDepth();
+        for (int i = 0; i < newWastesList.size(); i++) {
+            result += "\n " + newWastesList.get(i).getWidth() + " " + newWastesList.get(i).getDepth();
         }
-        return result;
+        System.out.println(result);
+
+        return new Service(newWastesList, newFormsList);
     }
 
 
     public Service(List<Form> availableForms, List<Form> desiredForms) {
-        this.availableForms = availableForms;
-        this.desiredForms = desiredForms;
+        this.newWastesList = availableForms;
+        this.newFormsList = desiredForms;
     }
 
-    public List<Form> getAvailableForms() {
-        return availableForms;
+    public List<Form> getNewWastesList() {
+        return newWastesList;
     }
 
-    public void setAvailableForms(List<Form> availableForms) {
-        this.availableForms = availableForms;
+    public void setNewWastesList(List<Form> newWastesList) {
+        this.newWastesList = newWastesList;
     }
 
-    public List<Form> getDesiredForms() {
-        return desiredForms;
+    public List<Form> getNewFormsList() {
+        return newFormsList;
     }
 
-    public void setDesiredForms(List<Form> desiredForms) {
-        this.desiredForms = desiredForms;
+    public void setNewFormsList(List<Form> newFormsList) {
+        this.newFormsList = newFormsList;
     }
 
     public List<Form> tokenizer(String text, int type) {
