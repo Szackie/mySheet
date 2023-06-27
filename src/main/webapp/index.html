@@ -16,7 +16,7 @@
             padding:5px;
         }
         #nav {
-            line-height: 40px;
+            line-height: 15%;
             background-color:#eeeeee;
             height:300px;
             width:150px;
@@ -25,12 +25,12 @@
         }
         #waste {
 
-            width:600px;
+            width:35%;
             float:left;
             padding:10px;
         }
         #newform {
-            width:600px;
+            width:50%;
             float:left;
             padding:10px;
         }
@@ -47,9 +47,22 @@
             cursor: pointer;
         }
         #allWastes, #allNewWastes {
+            line-height: 25px;
   display: inline-block;
   vertical-align: top;
-  width: 50%;
+  width: 45%;
+}
+#allNewForms, #allForms {
+            line-height: 25px;
+  display: inline-block;
+  vertical-align: top;
+  width: 37%;
+}
+#liczbtn ,#addformatkabtn,#formatkaText,#addscinkabtn,#scinkaText{
+            line-height: 25px;
+  display: inline-block;
+  vertical-align: top;
+  width: 20%;
 }
     </style>
 </head>
@@ -61,19 +74,17 @@
         <div id="header">
             <h1>Kalkulator Formatek</h1>
         </div>
-        <!-- <div id="nav">
-            1.Wklej ścinki<br>
-            2.Dodaj detale+ilość<br>
-            w formacie:<br>
-            szer. dł. ilość szt.<br>
-            (oddzielone spacją)<br>
-            3.Tnij
-        </div> -->
+        <div id="nav">
+            <p>Info</p><br>
+            <p>Reset</p>
+
+        </div>
         <div id="waste">
             <h1>Ścinki</h1>
             <input id="scinkaText" class="pure-input-rounded pure-u-1" name="name" placeholder="scinkaText">
-            <button id="addscinkabtn" class="pure-button pure-button-primary pure-u-1">addscinkabtn</button>
 
+            <button id="addscinkabtn" class="pure-button pure-button-primary pure-u-1">Dodaj ścinki</button>
+            <br>
             <fieldset id="allWastes">Dodane ścinki</fieldset>
             <fieldset id="allNewWastes">ścinki po cięciu</fieldset>
 
@@ -81,12 +92,14 @@
         <div id="newform">
             <h1>Formatki</h1>
             <input id="formatkaText" class="pure-input-rounded pure-u-1" name="name" placeholder="formatkaText">
-            <button id="addformatkabtn" class="pure-button pure-button-primary pure-u-1">addformatkabtn</button>
+            <button id="addformatkabtn" class="pure-button pure-button-primary pure-u-1">Dodaj formatki</button>
+            <button id="liczbtn" class="pure-button pure-button-primary pure-u-1-4" STYLE="font-weight: bold; color:blue; background:coral; width:100px; height:50px;">Wykonaj</button>
+            <br>
             <fieldset id="allForms">Dodane formatki:</fieldset>
-            <fieldset id="allNewForms">Otrzymane formatki:</fieldset>
+            <fieldset id="allNewForms">Wykonalne formatki:</fieldset>
+
         </div>
-        <button id="liczbtn" class="pure-button pure-button-primary pure-u-1-4" style="float: right">liczbtn</button>
-        <div id="plainSolve"></div>
+
         <div id="footer">
             Copyright © szackie
         </div>
@@ -113,15 +126,9 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
                     name: scinkaTextValue
                 })
         })
-        .then(function(response) {
-            if (response.ok) {
-                return response.json(); // Parse the response as JSON
-            } else {
-                throw new Error('Error: ' + response.status);
-            }
-        })
+        .then(processOkResponse)
 .then(function(responseData) {
-    // Get the allForms fieldset
+    // Get the allForms fieldsetł
     var allWasteFieldset = document.getElementById('allWastes');
         allWasteFieldset.innerHTML = '';
 
@@ -144,19 +151,8 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
             fetch('http://localhost:8080/api/scinka/' + waste.id, {
                 method: 'DELETE'
             })
-            .then(function(response) {
-                if (response.ok) {
-                    return response.json(); // Parse the response as JSON
-                } else {
-                    throw new Error('Error: ' + response.status);
-                }
-            })
-            .then(function(responseData) {
-                // Handle the response data if needed
-            })
-            .catch(function(error) {
-                console.error(error);
-            });
+            .then(processOkResponse)
+            .catch(console.warn);
         });
 
         // Append the remove button to the list item
@@ -165,7 +161,8 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
         // Append the list item to the allForms fieldset
         allWasteFieldset.appendChild(listItem);
     });
-});
+})
+.then(() => scinkaText.value = '');
 
 });
 
@@ -190,13 +187,7 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
                     name: formatkaTextValue
                 })
         })
-        .then(function(response) {
-            if (response.ok) {
-                return response.json(); // Parse the response as JSON
-            } else {
-                throw new Error('Error: ' + response.status);
-            }
-        })
+        .then(processOkResponse)
 .then(function(responseData) {
     // Get the allForms fieldset
     var allFormsFieldset = document.getElementById('allForms');
@@ -221,19 +212,8 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
             fetch('http://localhost:8080/api/formatka/' + form.id, {
                 method: 'DELETE'
             })
-            .then(function(response) {
-                if (response.ok) {
-                    return response.json(); // Parse the response as JSON
-                } else {
-                    throw new Error('Error: ' + response.status);
-                }
-            })
-            .then(function(responseData) {
-                // Handle the response data if needed
-            })
-            .catch(function(error) {
-                console.error(error);
-            });
+            .then(processOkResponse)
+            .catch(console.warn);
         });
 
         // Append the remove button to the list item
@@ -242,11 +222,11 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
         // Append the list item to the allForms fieldset
         allFormsFieldset.appendChild(listItem);
     });
-});
+})
+.then(() => formatkaText.value = '');
 
 });
 //SOLVE
-
 
 document.getElementById('liczbtn').addEventListener('click', function(event) {
     event.preventDefault(); // Prevent the form from submitting normally
@@ -261,13 +241,7 @@ document.getElementById('liczbtn').addEventListener('click', function(event) {
             'Content-Type': 'application/json'
         },
     })
-    .then(function(response) {
-        if (response.ok) {
-            return response.json(); // Parse the response as JSON
-        } else {
-            throw new Error('Błąd: ' + response.status);
-        }
-    })
+    .then(processOkResponse)
     .then(function(responseData) {
         // Get the allForms fieldset
         var allNewFormsFieldset = document.getElementById('allNewForms');
@@ -284,20 +258,18 @@ document.getElementById('liczbtn').addEventListener('click', function(event) {
 
         responseData.newFormsList.forEach(function(newForm) {
             var newFormlistItem = document.createElement('li');
-            newFormlistItem.textContent = newForm.width + ' x ' + newForm.depth + ', ilość: ' + newForm.quantity;
+            newFormlistItem.textContent = newForm.width + ' x ' + newForm.depth + ', wykonalnych: ' + newForm.quantity;
             allNewFormsFieldset.appendChild(newFormlistItem);
         });
     })
-    .catch(function(error) {
-        // Handle the error
-        console.error(error);
-
-        // Display an error message on the page
-        var errorDiv = document.createElement('div');
-        errorDiv.textContent = 'Wystąpił błąd podczas komunikacji z serwerem.';
-        document.body.appendChild(errorDiv);
-    });
+    .catch(console.warn);
 });
+function processOkResponse(response = {}) {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error(`Status not 200 (${response.status})`);
+    }
 </script>
 </body>
 </html>

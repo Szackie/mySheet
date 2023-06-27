@@ -79,8 +79,6 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
                             newWastesList.add(temp.get(k));
                     }
                 }
-
-
                 i++;
             }
             result += "\ndetal: " + newFormsList.get(j).toString() + ", ilość: " + quantity;
@@ -108,23 +106,8 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
         this.newFormsList = desiredForms;
     }
 
-    public List<Form> getNewWastesList() {
-        return newWastesList;
-    }
 
-    public void setNewWastesList(List<Form> newWastesList) {
-        this.newWastesList = newWastesList;
-    }
-
-    public List<Form> getNewFormsList() {
-        return newFormsList;
-    }
-
-    public void setNewFormsList(List<Form> newFormsList) {
-        this.newFormsList = newFormsList;
-    }
-
-    public List<Form> tokenizer(String text, int type) {
+    public static List<Form> tokenizer(String text, int type) {
 
         Pattern pattern = Pattern.compile("-?\\d+"); // Wzorzec dla liczby całkowitej(MOżE być ujemna!!!)
         Matcher matcher = pattern.matcher(text);
@@ -168,4 +151,20 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
         }
         return list;
     }
+    public List<Form> getNewWastesList() {
+        return newWastesList;
+    }
+
+    public void setNewWastesList(List<Form> newWastesList) {
+        this.newWastesList = newWastesList;
+    }
+
+    public List<Form> getNewFormsList() {
+        return newFormsList;
+    }
+
+    public void setNewFormsList(List<Form> newFormsList) {
+        this.newFormsList = newFormsList;
+    }
+
 }
