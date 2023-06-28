@@ -62,6 +62,7 @@ public class Servlet {
         }
         return ResponseEntity.ok(formsToCreate);
     }
+
     @GetMapping("/solve")
 
     public ResponseEntity<Service> solution(){
@@ -69,4 +70,13 @@ public class Servlet {
         var result = service.solve();
         return ResponseEntity.ok(result);
     }
+
+    @DeleteMapping("/reset")
+    public ResponseEntity<?> removeAllData(){
+        formsToCreate.clear();
+        availableForms.clear();
+
+        return ResponseEntity.ok().build();
+    }
+
 }
