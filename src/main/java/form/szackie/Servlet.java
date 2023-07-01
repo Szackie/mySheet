@@ -23,6 +23,8 @@ public class Servlet {
     ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
         String str = wasteText.get("name");
         List<Form> newWastes = Service.tokenizer(str, 2);
+        for(Form waste: newWastes)
+            waste.setParent(waste.getId());
         availableForms.addAll(newWastes);
         return ResponseEntity.ok(availableForms);
     }
