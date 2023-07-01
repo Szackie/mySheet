@@ -271,13 +271,13 @@ document.getElementById('liczbtn').addEventListener('click', function(event) {
         allNewWastesFieldset.innerHTML = '';
 
         // Create new list elements for new forms and new wastes received from the backend
-        responseData.newWastesList.forEach(function(newWaste) {
+        responseData.usedList.forEach(function(newWaste) {
             var newWastelistItem = document.createElement('li');
             newWastelistItem.textContent = newWaste.width + ' x ' + newWaste.depth ;
             allNewWastesFieldset.appendChild(newWastelistItem);
         });
 
-        responseData.newFormsList.forEach(function(newForm) {
+        responseData.doneList.forEach(function(newForm) {
             var newFormlistItem = document.createElement('li');
             newFormlistItem.textContent = newForm.width + ' x ' + newForm.depth + ', wykonalnych: ' + newForm.quantity;
             allNewFormsFieldset.appendChild(newFormlistItem);

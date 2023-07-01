@@ -17,6 +17,26 @@ public class Form {
     private int quantity;
     private int area;
     private int comparator;
+    private boolean used=false;
+    private boolean done=false;
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+
+
 
 
     public static int getNextId() {
@@ -88,8 +108,13 @@ public class Form {
 
     public Form(int width, int depth) {
         this.id=getNextId();
-        this.depth = depth;
-        this.width = width;
+        if(width>depth) {
+            this.width = depth;
+            this.depth=width;
+        }else {
+            this.depth = depth;
+            this.width = width;
+        }
         this.quantity = 1;
         this.area=width*depth;
         this.comparator=0;
@@ -97,8 +122,13 @@ public class Form {
 
     public Form(int width, int depth, int quantity) {
         this.id=getNextId();
-        this.depth = depth;
-        this.width = width;
+        if(width>depth) {
+            this.width = depth;
+            this.depth=width;
+        }else {
+            this.depth = depth;
+            this.width = width;
+        }
         this.quantity = quantity;
         this.area=width*depth;
         this.comparator=0;

@@ -23,15 +23,13 @@ public class Servlet {
     ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
         String str = wasteText.get("name");
         List<Form> newWastes = Service.tokenizer(str, 2);
-        for(Form waste: newWastes)
-            waste.setParent(waste.getId());
         availableForms.addAll(newWastes);
         return ResponseEntity.ok(availableForms);
     }
 
     @DeleteMapping("/scinka/{id}")
     ResponseEntity<List<Form>> removeWaste(@PathVariable int id) {
-        if (formsToCreate == null)
+        if (availableForms == null)
             return ResponseEntity.notFound().build();
         for (int i = 0; i < availableForms.size(); i++) {
             if (availableForms.get(i).getId() == id) {
