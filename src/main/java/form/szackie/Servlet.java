@@ -75,6 +75,7 @@ public class Servlet {
     public ResponseEntity<?> removeAllData(){
         formsToCreate.clear();
         availableForms.clear();
+        service.reset();
 
         return ResponseEntity.ok().build();
     }

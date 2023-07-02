@@ -10,6 +10,7 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
     private List<Form> doneList;
     private List<Form> usedList;
 
+
     public List<Form> expandList() {
 
         for (int i = 0; i < newFormsList.size(); i++) {
@@ -24,127 +25,286 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
         return newFormsList;
     }
 
-    public List<Form> checkNextPossibility(Form waste, Form form, int startIndex) {
+    public List<Form> checkNextPossibility(Form waste, Form form, List<Integer> checkedForms) {
 
-        form.setComparator(0);
-        if (optimalCut(waste, form) == null) {
+        List<Form> result = new ArrayList<>();
+        int indexDoneForm = -1;
+        waste.setComparator(0);
 
-            return new ArrayList<>(Arrays.asList(new Form(0, 0), new Form(0, 0)));
+        if (!fits(waste, form)) {
+            Form zero=new Form(0,0);
+            zero.setComparator(0);
+            result.add(zero);
+            result.add(zero);
+            return result;
         }
+
 
         int A = waste.getWidth();
         int B = waste.getDepth();
         int a = form.getWidth();
         int b = form.getDepth();
 
-        List<CompareArea> compareAreas = new ArrayList<>();
+        waste.setComparator(a * b);
 
+        List<CompareArea> compareAreas = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
-            CompareArea c = new CompareArea(form.getArea(), startIndex);
-            System.out.println(c.getSumArea());
+
+            //DOBRZE, ŻE -1 NA POCZĄTKU ????????????
+
+            CompareArea c = new CompareArea(waste.getComparator(), -1);
             compareAreas.add(c);
         }
-        System.out.println("!!!!!!!!!!!" + compareAreas.size());
 
-        int maxComparator = 0;
-
-        if (fitsBothWays(waste, form)) {
-
-            for (int i = startIndex; i < newFormsList.size(); i++) {
-
-                for (int j = 0; j < newFormsList.size(); j++) {
-                    if (!newFormsList.get(j).isDone() && j != i) {
-                        compareAreas.get(0).setSumArea(           compareAreas.get(0).getSumArea() + checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(1).getComparator()+checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(0).getComparator());
-                        checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(1).setComparator(compareAreas.get(0).getSumArea());
-                        checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(0).setComparator(compareAreas.get(0).getSumArea());
-
-                        if (maxComparator < compareAreas.get(0).getSumArea()) {
-                            maxComparator = compareAreas.get(0).getSumArea();
-                            compareAreas.get(0).setFormIndex(j);
-                        }
-                    }
-                }
-
-                compareAreas.get(1).setSumArea(compareAreas.get(1).getSumArea() + checkNextPossibility(new Form(a, B - b), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(a, B - b), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(1).getSumArea());
+        int max = 0;
+        List<Integer> tempCheckedForms = new ArrayList<>();
+        checkedForms.add(newFormsList.indexOf(form));
+        tempCheckedForms.addAll(checkedForms);
 
 
-                compareAreas.get(2).setSumArea(compareAreas.get(2).getSumArea() + checkNextPossibility(new Form(B - b, A), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(B - b, A), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(2).getSumArea());
-
-
-                compareAreas.get(3).setSumArea(compareAreas.get(3).getSumArea() + checkNextPossibility(new Form(A - a, b), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(A - a, b), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(3).getSumArea());
-
-
-                compareAreas.get(4).setSumArea(compareAreas.get(4).getSumArea() + checkNextPossibility(new Form(A - b, B), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(A - b, B), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(4).getSumArea());
-
-
-                compareAreas.get(5).setSumArea(compareAreas.get(5).getSumArea() + checkNextPossibility(new Form(B - a, b), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(B - a, b), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(5).getSumArea());
-
-
-                compareAreas.get(6).setSumArea(compareAreas.get(6).getSumArea() + checkNextPossibility(new Form(B - a, A), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(B - a, A), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(6).getSumArea());
-
-
-                compareAreas.get(7).setSumArea(compareAreas.get(7).getSumArea() + checkNextPossibility(new Form(A - b, a), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(A - b, a), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(7).getSumArea());
-
-
+        Form waste1 = new Form(B, A - a);
+        for (int i = 0; i < newFormsList.size(); i++) {
+            compareAreas.get(0).setSumArea(waste.getComparator());
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste1, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea()
+                        + checkNextPossibility(waste1, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste1, newFormsList.get(i), checkedForms).get(1).getComparator());
             }
-
-
-            for (CompareArea c : compareAreas) {
-                System.out.println(" wszytskie maksy: " + c.getSumArea());
-                if (maxComparator < c.getSumArea()) {
-
-                    maxComparator = c.getSumArea();
-                    System.out.println("Maxcomparator: " + maxComparator);
-                }
-            }
-
-            if (maxComparator > 0) {
-
-
-                System.out.println(B + " " + (A - a) + " " + a + " " + (B - b));
-
-                System.out.println((A - a) + " " + b + " " + (B - b) + " " + A);
-
-                System.out.println((B - a) + " " + b + " " + (A - b) + " " + B);
-
-                System.out.println((A - b) + " " + a + " " + (B - a) + " " + A);
-
-                if (maxComparator == compareAreas.get(0).getSumArea() || maxComparator == compareAreas.get(1).getSumArea()) {
-                    System.out.println("A");
-                    return new ArrayList<>(Arrays.asList(new Form(B, A - a), new Form(a, B - b)));
-                }
-
-
-                if (maxComparator == compareAreas.get(2).getSumArea() || maxComparator == compareAreas.get(3).getSumArea()) {
-
-                    System.out.println("B");
-                    return new ArrayList<>(Arrays.asList(new Form(A - a, b), new Form(B - b, A)));
-                }
-
-
-                if (maxComparator == compareAreas.get(4).getSumArea() || maxComparator == compareAreas.get(5).getSumArea()) {
-
-                    System.out.println("C");
-                    return new ArrayList<>(Arrays.asList(new Form(B - a, b), new Form(A - b, B)));
-                }
-
-
-                if (maxComparator == compareAreas.get(6).getSumArea() || maxComparator == compareAreas.get(7).getSumArea()) {
-
-                    System.out.println("D");
-                    return new ArrayList<>(Arrays.asList(new Form(A - b, a), new Form(B - a, A)));
-                }
+            waste1.setComparator(compareAreas.get(0).getSumArea());
+            if (max < compareAreas.get(0).getSumArea()) {
+                max = compareAreas.get(0).getSumArea();
+                compareAreas.get(0).setFormIndex(i);
 
             }
         }
-        return optimalCut(waste, form);
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        Form waste2 = new Form(a, B - b);
+        for (int i = 0; i < newFormsList.size(); i++) {
+            compareAreas.get(1).setSumArea(waste.getComparator());
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste2, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(1).setSumArea(compareAreas.get(1).getSumArea()
+                        + checkNextPossibility(waste2, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste2, newFormsList.get(i), checkedForms).get(1).getComparator());
+            }
+            waste2.setComparator(compareAreas.get(1).getSumArea());
+            if (max < compareAreas.get(1).getSumArea()) {
+                max = compareAreas.get(1).getSumArea();
+                compareAreas.get(1).setFormIndex(i);
+            }
+        }
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        Form waste3 = new Form(B - b, A);
+        compareAreas.get(2).setSumArea(waste.getComparator());
+        for (int i = 0; i < newFormsList.size(); i++) {
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste3, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(2).setSumArea(compareAreas.get(2).getSumArea()
+                        + checkNextPossibility(waste3, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste3, newFormsList.get(i), checkedForms).get(1).getComparator());
+            }
+            waste3.setComparator(compareAreas.get(2).getSumArea());
+            if (max < compareAreas.get(2).getSumArea()) {
+                max = compareAreas.get(2).getSumArea();
+                compareAreas.get(2).setFormIndex(i);
+            }
+        }
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        Form waste4 = new Form(A - a, b);
+        for (int i = 0; i < newFormsList.size(); i++) {
+            compareAreas.get(3).setSumArea(waste.getComparator());
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste4, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(3).setSumArea(compareAreas.get(3).getSumArea()
+                        + checkNextPossibility(waste4, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste4, newFormsList.get(i), checkedForms).get(1).getComparator());
+            }
+            waste4.setComparator(compareAreas.get(3).getSumArea());
+            if (max < compareAreas.get(3).getSumArea()) {
+                max = compareAreas.get(3).getSumArea();
+                compareAreas.get(3).setFormIndex(i);
+            }
+        }
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        Form waste5 = new Form(A - b, B);
+        for (int i = 0; i < newFormsList.size(); i++) {
+            compareAreas.get(4).setSumArea(waste.getComparator());
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste5, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(4).setSumArea(compareAreas.get(4).getSumArea()
+                        + checkNextPossibility(waste5, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste5, newFormsList.get(i), checkedForms).get(1).getComparator());
+            }
+            waste5.setComparator(compareAreas.get(4).getSumArea());
+            if (max < compareAreas.get(4).getSumArea()) {
+                max = compareAreas.get(4).getSumArea();
+                compareAreas.get(4).setFormIndex(i);
+            }
+        }
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        Form waste6 = new Form(B - a, b);
+        for (int i = 0; i < newFormsList.size(); i++) {
+            compareAreas.get(5).setSumArea(waste.getComparator());
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste6, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(5).setSumArea(compareAreas.get(5).getSumArea()
+                        + checkNextPossibility(waste6, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste6, newFormsList.get(i), checkedForms).get(1).getComparator());
+            }
+            waste6.setComparator(compareAreas.get(5).getSumArea());
+            if (max < compareAreas.get(5).getSumArea()) {
+                max = compareAreas.get(5).getSumArea();
+                compareAreas.get(5).setFormIndex(i);
+            }
+        }
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        Form waste7 = new Form(B - a, A);
+        for (int i = 0; i < newFormsList.size(); i++) {
+            compareAreas.get(6).setSumArea(waste.getComparator());
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste7, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(6).setSumArea(compareAreas.get(6).getSumArea()
+                        + checkNextPossibility(waste7, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste7, newFormsList.get(i), checkedForms).get(1).getComparator());
+            }
+            waste7.setComparator(compareAreas.get(6).getSumArea());
+            if (max < compareAreas.get(6).getSumArea()) {
+                max = compareAreas.get(6).getSumArea();
+                compareAreas.get(6).setFormIndex(i);
+            }
+        }
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        Form waste8 = new Form(A - b, a);
+        for (int i = 0; i < newFormsList.size(); i++) {
+            compareAreas.get(7).setSumArea(waste.getComparator());
+            if (!newFormsList.get(i).isDone() && !checkedForms.contains(i) && fits(waste8, newFormsList.get(i))) {
+                checkedForms.add(i);
+                compareAreas.get(7).setSumArea(compareAreas.get(7).getSumArea()
+                        + checkNextPossibility(waste8, newFormsList.get(i), checkedForms).get(0).getComparator()
+                        + checkNextPossibility(waste8, newFormsList.get(i), checkedForms).get(1).getComparator());
+            }
+            waste8.setComparator(compareAreas.get(7).getSumArea());
+            if (max < compareAreas.get(7).getSumArea()) {
+                max = compareAreas.get(7).getSumArea();
+                compareAreas.get(7).setFormIndex(i);
+            }
+        }
+        checkedForms.clear();
+        checkedForms.addAll(tempCheckedForms);
+
+
+        if (max == compareAreas.get(0).getSumArea()) {
+            result.add(waste1);
+            result.add(waste2);
+            indexDoneForm = compareAreas.get(0).getFormIndex();
+        }
+
+
+        else if (max == compareAreas.get(1).getSumArea()) {
+            result.add(waste1);
+            result.add(waste2);
+            indexDoneForm = compareAreas.get(1).getFormIndex();
+        }
+
+
+        else if (max == compareAreas.get(2).getSumArea()) {
+            result.add(waste4);
+            result.add(waste3);
+            indexDoneForm = compareAreas.get(2).getFormIndex();
+        }
+
+
+        else if (max == compareAreas.get(3).getSumArea()) {
+            result.add(waste4);
+            result.add(waste3);
+            indexDoneForm = compareAreas.get(3).getFormIndex();
+        }
+
+
+        else if (max == compareAreas.get(4).getSumArea()) {
+            result.add(waste6);
+            result.add(waste5);
+            indexDoneForm = compareAreas.get(4).getFormIndex();
+        }
+
+
+       else if (max == compareAreas.get(5).getSumArea()) {
+            result.add(waste6);
+            result.add(waste5);
+            indexDoneForm = compareAreas.get(5).getFormIndex();
+        }
+
+
+        else if (max == compareAreas.get(6).getSumArea()) {
+            result.add(waste7);
+            result.add(waste8);
+            indexDoneForm = compareAreas.get(6).getFormIndex();
+        }
+
+
+        else if (max == compareAreas.get(7).getSumArea()) {
+            result.add(waste7);
+            result.add(waste8);
+            indexDoneForm = compareAreas.get(7).getFormIndex();
+        }
+        System.out.println("Max: "+max);
+        System.out.println(" porównywacze : "+compareAreas.get(0).getSumArea());
+        System.out.println(" porównywacze : "+compareAreas.get(1).getSumArea());
+        System.out.println(" porównywacze : "+compareAreas.get(2).getSumArea());
+        System.out.println(" porównywacze : "+compareAreas.get(3).getSumArea());
+        System.out.println(" porównywacze : "+compareAreas.get(4).getSumArea());
+        System.out.println(" porównywacze : "+compareAreas.get(5).getSumArea());
+        System.out.println(" porównywacze : "+compareAreas.get(6).getSumArea());
+        System.out.println(" porównywacze : "+compareAreas.get(7).getSumArea());
+        //  PRZEMYŚL TO JESZCZE:
+
+//        if (compareAreas.get(0).getSumArea() == compareAreas.get(0).getSumArea() &&
+//                compareAreas.get(0).getSumArea() == compareAreas.get(1).getSumArea() &&
+//                compareAreas.get(0).getSumArea() == compareAreas.get(2).getSumArea() &&
+//                compareAreas.get(0).getSumArea() == compareAreas.get(3).getSumArea() &&
+//                compareAreas.get(0).getSumArea() == compareAreas.get(4).getSumArea() &&
+//                compareAreas.get(0).getSumArea() == compareAreas.get(5).getSumArea() &&
+//                compareAreas.get(0).getSumArea() == compareAreas.get(6).getSumArea() &&
+//                compareAreas.get(0).getSumArea() == compareAreas.get(7).getSumArea()) {
+//
+//            return optimalCut(waste, form);
+//        }
+
+        if (indexDoneForm > 0) {
+            newFormsList.get(indexDoneForm).setDone(true);
+        }
+        if(result.size()==0){
+            Form zero=new Form(0,0);
+            zero.setComparator(0);
+            result.add(zero);
+            result.add(zero);
+            return result;
+        }
+        return result;
+
+        //     return optimalCut(waste, form);
     }
 
     public boolean fits(Form biggerForm, Form smallerForm) {
@@ -215,8 +375,9 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
     public Service solve() {
 
-
         this.newFormsList = expandList();
+
+        List<Integer> integerList = new ArrayList<>();
 
         for (int j = 0; j < newFormsList.size(); j++) {
             int i = 0;
@@ -224,9 +385,11 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
 
                 if (fits(newWastesList.get(i), newFormsList.get(j)) && !newWastesList.get(i).isUsed() && !newFormsList.get(j).isDone()) {
-                    List<Form> checkedList = checkNextPossibility(newWastesList.get(i), newFormsList.get(j), j);
-                    checkedList.get(0).setCutted(true);
-                    checkedList.get(1).setCutted(true);
+                    integerList.add(j);
+                    List<Form> checkedList = checkNextPossibility(newWastesList.get(i), newFormsList.get(j), integerList);
+
+                        checkedList.get(0).setCutted(true);
+                        checkedList.get(1).setCutted(true);
 
                     if (!newWastesList.get(i).isCutted()) {
                         newWastesList.get(i).setParentID(newWastesList.get(i).getId());
@@ -236,6 +399,7 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
                         checkedList.get(0).setParentID(newWastesList.get(i).getParentID());
                         checkedList.get(1).setParentID(newWastesList.get(i).getParentID());
                     }
+
                     newFormsList.get(j).setWasteID(newWastesList.get(i).getParentID());
                     newFormsList.get(j).setDone(true);
                     newWastesList.get(j).setUsed(true);
@@ -252,15 +416,19 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
         for (Form f : newFormsList) {
             if (f.isDone()) {
                 doneList.add(f);
-                System.out.println(f);
             }
+        }
+        for (Form f : doneList) {
+            System.out.println(f);
         }
         System.out.println("Użyte ścinki: ");
         for (Form w : newWastesList) {
             if (w.isUsed() && !w.isCutted()) {
                 usedList.add(w);
-                System.out.println(w);
             }
+        }
+        for (Form w : usedList) {
+            System.out.println(w);
         }
 
         return new Service(usedList, doneList);
@@ -357,5 +525,14 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
     public void setUsedList(List<Form> usedList) {
         this.usedList = usedList;
+    }
+
+    public void reset() {
+
+        this.newWastesList.clear();
+        this.newFormsList.clear();
+        this.doneList.clear();
+        this.usedList.clear();
+
     }
 }
