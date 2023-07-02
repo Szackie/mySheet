@@ -25,30 +25,45 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
     }
 
     public List<Form> checkNextPossibility(Form waste, Form form, int startIndex) {
-        if (optimalCut(waste, form) == null)
-            return new ArrayList<>(Arrays.asList(new Form(0, 0), new Form(0, 0)));
 
+        form.setComparator(0);
+        if (optimalCut(waste, form) == null) {
+
+            return new ArrayList<>(Arrays.asList(new Form(0, 0), new Form(0, 0)));
+        }
 
         int A = waste.getWidth();
         int B = waste.getDepth();
         int a = form.getWidth();
         int b = form.getDepth();
 
-        List<CompareArea> compareAreas = new ArrayList<>(8);
+        List<CompareArea> compareAreas = new ArrayList<>();
 
         for (int i = 0; i < 8; i++) {
             CompareArea c = new CompareArea(form.getArea(), startIndex);
+            System.out.println(c.getSumArea());
             compareAreas.add(c);
         }
+        System.out.println("!!!!!!!!!!!" + compareAreas.size());
 
         int maxComparator = 0;
 
-        if ( fitsBothWays(waste, form)) {
+        if (fitsBothWays(waste, form)) {
+
             for (int i = startIndex; i < newFormsList.size(); i++) {
 
-                compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea() + checkNextPossibility(new Form(B, A - a), newFormsList.get(i), i + 1).get(1).getComparator());
-                checkNextPossibility(new Form(B, A - a), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(0).getSumArea());
+                for (int j = 0; j < newFormsList.size(); j++) {
+                    if (!newFormsList.get(j).isDone() && j != i) {
+                        compareAreas.get(0).setSumArea(           compareAreas.get(0).getSumArea() + checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(1).getComparator()+checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(0).getComparator());
+                        checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(1).setComparator(compareAreas.get(0).getSumArea());
+                        checkNextPossibility(new Form(B, A - a), newFormsList.get(j), 0).get(0).setComparator(compareAreas.get(0).getSumArea());
 
+                        if (maxComparator < compareAreas.get(0).getSumArea()) {
+                            maxComparator = compareAreas.get(0).getSumArea();
+                            compareAreas.get(0).setFormIndex(j);
+                        }
+                    }
+                }
 
                 compareAreas.get(1).setSumArea(compareAreas.get(1).getSumArea() + checkNextPossibility(new Form(a, B - b), newFormsList.get(i), i + 1).get(1).getComparator());
                 checkNextPossibility(new Form(a, B - b), newFormsList.get(i), i + 1).get(1).setComparator(compareAreas.get(1).getSumArea());
@@ -79,23 +94,27 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
 
             }
+
+
             for (CompareArea c : compareAreas) {
+                System.out.println(" wszytskie maksy: " + c.getSumArea());
                 if (maxComparator < c.getSumArea()) {
+
                     maxComparator = c.getSumArea();
+                    System.out.println("Maxcomparator: " + maxComparator);
                 }
             }
 
             if (maxComparator > 0) {
 
 
+                System.out.println(B + " " + (A - a) + " " + a + " " + (B - b));
 
-                System.out.println(B+" "+(A - a)+" "+a+" " +(B - b));
+                System.out.println((A - a) + " " + b + " " + (B - b) + " " + A);
 
-                System.out.println((A - a)+" "+ b+" "+(B - b)+" "+ A);
+                System.out.println((B - a) + " " + b + " " + (A - b) + " " + B);
 
-                System.out.println((B - a)+" "+ b+" "+(A - b) +" "+B);
-
-                System.out.println((A - b)+" "+ a+" "+(B - a)+" "+ A);
+                System.out.println((A - b) + " " + a + " " + (B - a) + " " + A);
 
                 if (maxComparator == compareAreas.get(0).getSumArea() || maxComparator == compareAreas.get(1).getSumArea()) {
                     System.out.println("A");
