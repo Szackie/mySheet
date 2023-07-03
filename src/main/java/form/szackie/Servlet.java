@@ -73,8 +73,11 @@ public class Servlet {
 
     @DeleteMapping("/reset")
     public ResponseEntity<?> removeAllData(){
+        if(formsToCreate!=null)
         formsToCreate.clear();
+        if(availableForms!=null)
         availableForms.clear();
+        if(service!=null)
         service.reset();
 
         return ResponseEntity.ok().build();
