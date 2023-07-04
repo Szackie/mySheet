@@ -134,6 +134,15 @@ public class Form {
         this.comparator=0;
     }
 
+@Override
+public boolean equals(Object o){
+    if(!(o instanceof Form))
+        return false;
+    if(((Form) o).getId()!=this.id)
+        return false;
+
+    return true;
+}
     @Override
     public String toString() {
         return id+
