@@ -10,6 +10,8 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
     private List<Form> doneList;
     private List<Form> usedList;
 
+    private List<Integer> indexes=new ArrayList<>();
+
 
     public List<Form> expandList() {
 
@@ -35,15 +37,42 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
 
         List<Integer> integerList = new ArrayList<>();
-
+        List<Form> resultList=new ArrayList<>();
 
         int i = 0;
         while (i < newWastesList.size()) {
 
+//            for(int j=0;j< newFormsList.size();j++) {
 
-            checkNextPossibility(newWastesList.get(i), newWastesList.get(0), integerList);
+                resultList.clear();
+                resultList=checkNextPossibility(newWastesList.get(i), newFormsList.get(0), integerList);
+                
+//                if (fits(newWastesList.get(i), newFormsList.get(j)) && !newWastesList.get(i).isUsed() && !newFormsList.get(j).isDone() && j==resultList.get(0).getWasteID()) {
+//
+//                    resultList.get(0).setCutted(true);
+//                    resultList.get(1).setCutted(true);
+//
+//                    if (!newWastesList.get(i).isCutted()) {
+//                        newWastesList.get(i).setParentID(newWastesList.get(i).getId());
+//                        resultList.get(0).setParentID(newWastesList.get(i).getId());
+//                        resultList.get(1).setParentID(newWastesList.get(i).getId());
+//                    } else {
+//                        resultList.get(0).setParentID(newWastesList.get(i).getParentID());
+//                        resultList.get(1).setParentID(newWastesList.get(i).getParentID());
+//                    }
+//
+//
+//                    newFormsList.get(j).setWasteID(newWastesList.get(i).getParentID());
+//                    newFormsList.get(j).setDone(true);
+//                    newWastesList.get(i).setUsed(true);
+//
+//                    newWastesList.add(i+1,setWidthDepth(resultList.get(1)));
+//                    newWastesList.add(i+1,setWidthDepth(resultList.get(0)));
+//
 
+//                }
 
+          //  }
             i++;
         }
 
@@ -66,7 +95,17 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
         for (Form w : usedList) {
             System.out.println(w);
         }
+        System.out.println("nWL: ");
+        for (Form w : newWastesList) {
 
+            System.out.println(w.toString());
+
+        }
+        System.out.println(" INDEXES : ");
+        for (Integer o:indexes){
+            if(o>=0)
+            System.out.println(newFormsList.get(o));
+        }
         return new Service(usedList, doneList);
     }
 
@@ -109,7 +148,6 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
             List<Integer> tempCheckedForms = new ArrayList<>(checkedForms);
 
-            //FIXME CHCE ŻEBY SPRAWDZAŁO ŚCINKI PARAMI
 
             Form waste1 = new Form(B, A - a);
             Form waste2 = new Form(a, B - b);
@@ -262,31 +300,13 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
         //     return optimalCut(waste, form);
 
+        indexes.add(indexDoneForm);
 
-        if (fits(waste, form) && !waste.isUsed() && !form.isDone() && indexDoneForm >= 0) {
-
-            result.get(0).setCutted(true);
-            result.get(1).setCutted(true);
-
-            if (!waste.isCutted()) {
-                waste.setParentID(waste.getId());
-                result.get(0).setParentID(waste.getId());
-                result.get(1).setParentID(waste.getId());
-            } else {
-                result.get(0).setParentID(waste.getParentID());
-                result.get(1).setParentID(waste.getParentID());
-            }
-
-
-            newFormsList.get(indexDoneForm).setWasteID(waste.getParentID());
-            newFormsList.get(indexDoneForm).setDone(true);
-            waste.setUsed(true);
-
-            newWastesList.add(setWidthDepth(result.get(1)));
-            newWastesList.add(setWidthDepth(result.get(0)));
-
-
-        }
+        if(newFormsList.indexOf(form)==indexDoneForm)
+            //fixme roboczo na szybko przekazuję index formatki dalej:
+            result.get(0).setWasteID(indexDoneForm);
+        else
+            result.get(0).setWasteID(-1);
 
         return result;
     }
