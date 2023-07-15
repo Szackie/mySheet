@@ -105,23 +105,21 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
             System.out.println(w.toString());
 
         }
-        System.out.println(" INDEXES : ");
-        for (Integer o : indexes) {
-            if (o >= 0)
-                System.out.println(newFormsList.get(o));
-        }
+
         return new Service(usedList, doneList);
     }
 
+    //fixme nie powinienem tutaj przyjmować w argumencie konkretnej formatki, bo ten algorytm ma na celu wyłonienie najbardziej odpowiedniej(z której będę wykonywał nowe ścinki)(bardziej listę formatek)
     public List<Form> checkNextPossibility(Form waste, Form form, List<Integer> checkedForms) {
 
         List<Form> result = new ArrayList<>();
         int indexDoneForm1 = -1;
         int indexDoneForm2 = -1;
 
-
+        //fixme nie mogę od razu zwracać zera
         if (!fits(waste, form) || form.isDone() || waste.isUsed()) {
             waste.setComparator(0);
+
             return ZERO;
 
         } else {
@@ -222,7 +220,7 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
                 for (int j = i + 1; j < newFormsList.size(); j++) {
 
-                    compareAreas.get(0).setSumArea(waste.getComparator());
+                    compareAreas.get(1).setSumArea(waste.getComparator());
                     if (!newFormsList.get(i).isDone() && !newFormsList.get(j).isDone() && !checkedForms.contains(i) && !checkedForms.contains(j) && (fits(waste3, newFormsList.get(i)) || fits(waste4, newFormsList.get(i)) || fits(waste3, newFormsList.get(j)) || fits(waste4, newFormsList.get(j)))) {
                         int temp1 = 0;
                         int temp2 = 0;
@@ -259,23 +257,23 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
                         checkedForms.clear();
                         checkedForms.addAll(helpchecklist);
                         if (temp1 >= temp2) {
-                            compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea() + temp1);
+                            compareAreas.get(1).setSumArea(compareAreas.get(1).getSumArea() + temp1);
 
                         } else {
-                            compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea() + temp2);
+                            compareAreas.get(1).setSumArea(compareAreas.get(1).getSumArea() + temp2);
                         }
 
                     }
 
                     checkedForms.clear();
                     checkedForms.addAll(tempCheckedForms);
-                    if (maxArr[0] < compareAreas.get(0).getSumArea()) {
-                        maxArr[0] = compareAreas.get(0).getSumArea();
+                    if (maxArr[1] < compareAreas.get(1).getSumArea()) {
+                        maxArr[1] = compareAreas.get(1).getSumArea();
 
                         if (fits(waste3, newFormsList.get(i)) || fits(waste4, newFormsList.get(i)))
-                            compareAreas.get(0).setFormIndex1(i);
+                            compareAreas.get(1).setFormIndex1(i);
                         if (fits(waste3, newFormsList.get(j)) || fits(waste4, newFormsList.get(j)))
-                            compareAreas.get(0).setFormIndex2(j);
+                            compareAreas.get(1).setFormIndex2(j);
 
                     }
                 }
@@ -288,7 +286,7 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
                 for (int j = i + 1; j < newFormsList.size(); j++) {
 
-                    compareAreas.get(0).setSumArea(waste.getComparator());
+                    compareAreas.get(2).setSumArea(waste.getComparator());
                     if (!newFormsList.get(i).isDone() && !newFormsList.get(j).isDone() && !checkedForms.contains(i) && !checkedForms.contains(j) && (fits(waste5, newFormsList.get(i)) || fits(waste6, newFormsList.get(i)) || fits(waste5, newFormsList.get(j)) || fits(waste6, newFormsList.get(j)))) {
                         int temp1 = 0;
                         int temp2 = 0;
@@ -325,23 +323,23 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
                         checkedForms.clear();
                         checkedForms.addAll(helpchecklist);
                         if (temp1 >= temp2) {
-                            compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea() + temp1);
+                            compareAreas.get(2).setSumArea(compareAreas.get(2).getSumArea() + temp1);
 
                         } else {
-                            compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea() + temp2);
+                            compareAreas.get(2).setSumArea(compareAreas.get(2).getSumArea() + temp2);
                         }
 
                     }
 
                     checkedForms.clear();
                     checkedForms.addAll(tempCheckedForms);
-                    if (maxArr[0] < compareAreas.get(0).getSumArea()) {
-                        maxArr[0] = compareAreas.get(0).getSumArea();
+                    if (maxArr[2] < compareAreas.get(2).getSumArea()) {
+                        maxArr[2] = compareAreas.get(2).getSumArea();
 
                         if (fits(waste5, newFormsList.get(i)) || fits(waste6, newFormsList.get(i)))
-                            compareAreas.get(0).setFormIndex1(i);
+                            compareAreas.get(2).setFormIndex1(i);
                         if (fits(waste5, newFormsList.get(j)) || fits(waste6, newFormsList.get(j)))
-                            compareAreas.get(0).setFormIndex2(j);
+                            compareAreas.get(2).setFormIndex2(j);
 
                     }
                 }
@@ -354,7 +352,7 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
                 for (int j = i + 1; j < newFormsList.size(); j++) {
 
-                    compareAreas.get(0).setSumArea(waste.getComparator());
+                    compareAreas.get(3).setSumArea(waste.getComparator());
                     if (!newFormsList.get(i).isDone() && !newFormsList.get(j).isDone() && !checkedForms.contains(i) && !checkedForms.contains(j) && (fits(waste7, newFormsList.get(i)) || fits(waste8, newFormsList.get(i)) || fits(waste7, newFormsList.get(j)) || fits(waste8, newFormsList.get(j)))) {
                         int temp1 = 0;
                         int temp2 = 0;
@@ -391,23 +389,23 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
                         checkedForms.clear();
                         checkedForms.addAll(helpchecklist);
                         if (temp1 >= temp2) {
-                            compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea() + temp1);
+                            compareAreas.get(3).setSumArea(compareAreas.get(3).getSumArea() + temp1);
 
                         } else {
-                            compareAreas.get(0).setSumArea(compareAreas.get(0).getSumArea() + temp2);
+                            compareAreas.get(3).setSumArea(compareAreas.get(3).getSumArea() + temp2);
                         }
 
                     }
 
                     checkedForms.clear();
                     checkedForms.addAll(tempCheckedForms);
-                    if (maxArr[0] < compareAreas.get(0).getSumArea()) {
-                        maxArr[0] = compareAreas.get(0).getSumArea();
+                    if (maxArr[3] < compareAreas.get(3).getSumArea()) {
+                        maxArr[3] = compareAreas.get(3).getSumArea();
 
                         if (fits(waste7, newFormsList.get(i)) || fits(waste8, newFormsList.get(i)))
-                            compareAreas.get(0).setFormIndex1(i);
+                            compareAreas.get(3).setFormIndex1(i);
                         if (fits(waste7, newFormsList.get(j)) || fits(waste8, newFormsList.get(j)))
-                            compareAreas.get(0).setFormIndex2(j);
+                            compareAreas.get(3).setFormIndex2(j);
 
                     }
                 }
@@ -447,7 +445,7 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
             System.out.println(" porównywacze : " + maxArr[2]);
             System.out.println(" porównywacze : " + maxArr[3]);
 
-            //  PRZEMYŚL TO JESZCZE2
+
 
             result.get(1).setComparator(max);
             result.get(0).setComparator(max);
@@ -463,8 +461,9 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
             }
         }
 
+        //fixme dodaję następne? sprawdzałem dla wymiarów pierwszej na liście, tnę na podstawie jej wymiarów, a potem sprawdzam włącznie z nią :(
 
-        if (!waste.isUsed() && indexDoneForm1 >= 0 && indexDoneForm2 >= 0 && !newFormsList.get(indexDoneForm1).isDone()) {
+        if (!waste.isUsed() && indexDoneForm1 >= 0 && indexDoneForm2 >= 0 && !newFormsList.get(indexDoneForm1).isDone()&& !newFormsList.get(indexDoneForm2).isDone()) {
 
             result.get(0).setCutted(true);
             result.get(1).setCutted(true);
@@ -479,8 +478,8 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
             }
 
 
-            newFormsList.get(indexDoneForm).setWasteID(waste.getParentID());
-            newFormsList.get(indexDoneForm).setDone(true);
+            newFormsList.get(indexDoneForm1).setWasteID(waste.getParentID());
+            newFormsList.get(indexDoneForm2).setDone(true);
             waste.setUsed(true);
 
             newWastesList.add(setWidthDepth(result.get(1)));
@@ -491,15 +490,8 @@ public class Service {// OBSERVERA DODAJ!!! AKTUALIZUJ LISTY (?)
 
         //     return optimalCut(waste, form);
 
-        indexes.add(indexDoneForm1);
-
-        if (newFormsList.indexOf(form) == indexDoneForm1)
-            //fixme roboczo na szybko przekazuję index formatki dalej:
-            result.get(0).setWasteID(indexDoneForm1);
-        else
-            result.get(0).setWasteID(-1);
-
         return result;
+
     }
 
 
