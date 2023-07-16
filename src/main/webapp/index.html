@@ -125,10 +125,37 @@
         </p>
         </div>
     </form>
+    <form id="infoForm" style="display: none;">
+        <div id="header">
+            <h1>Kalkulator Formatek</h1>
+        </div>
+        <div id="nav">
+            <p><button id="infobtn" class ="pure-button pure-button-primary pure-u-1" style="background-color: rgb(0, 4, 75);">Info</button></p><br>
+            <p><button id="resetbtn" class ="pure-button pure-button-primary pure-u-1"style="background-color: rgb(0, 4, 75);">Reset</button></p>
+
+        </div>
+        <div id="waste"style="      line-height: 25px;">
+            <h1>Instrukcja</h1>
+            <p> 1. Wklej listę z wymiarami dostępnych płyt. Wymiary oddziel dowolnymi znakami.UWAGA: nie podawaj ilości. Prawidłowy format to *szerokość1* *długość1* *szerokość2* *długość2* *szerokość3* *długość3* itd.</p>
+            <p>2. Wklej listę z wymiarami detali do wykonania. Wymiary oraz ilość oddziel dowolnymi znakami. UWAGA: Prawidłowy format: *szerokość1* *długość1* *ILOŚĆ1* *szerokość2* *długość2* *ILOŚĆ2* *szerokość3* *długość3* *ILOŚĆ3* itd. </p>
+            <p> 3. Kliknij przycisk "wykonaj". Program wyświetli wówczas możliwe do wykonania elemety. Uwaga: Program wykorzystuje zachowawczy algorytm nestingowy. Nie ma możliwości, żeby wykonał awykonalny detal, ale może się zdarzyć, że nie wyświetli wszystkich możliwych do wykonania elementów</p>
+        </div>
+
+
+        <div id="footer"><p>
+            Copyright © szackie
+        </p>
+        </div>
+    </form>
 
 </main>
 
 <script>
+     document.getElementById('infobtn').addEventListener('click', function(event) {
+        event.preventDefault();
+        document.getElementById('initialForm').style.display = 'none';
+        document.getElementById('infoForm').style.display = 'block';
+    });
 //ŚCINKI
 
 document.getElementById('addscinkabtn').addEventListener('click', function(event) {
