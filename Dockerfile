@@ -10,8 +10,6 @@ WORKDIR /app
 
 RUN chmod +x mvnw
 
-RUN ./mvnw package -DskipTests
+RUN ./mvnw install -DskipTests
 
-EXPOSE 8080
-
-CMD ["java", "-jar", "/app/target/myForm-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/target/myForm-0.0.1-SNAPSHOT.jar"]

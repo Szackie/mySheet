@@ -152,7 +152,7 @@
 
 <script>
 
-    const API_URL=`https://mysheet.onrender.com`;
+    const API_URL=`https://mysheet.onrender.com/api`;
 
      document.getElementById('infobtn').addEventListener('click', function(event) {
         event.preventDefault();
@@ -286,7 +286,7 @@ document.getElementById('liczbtn').addEventListener('click', function(event) {
     var formatkaTextValue = document.getElementById('formatkaText').value;
 
     // Make a GET request to the backend endpoint
-    fetch(`${API_URL}/solve', {
+    fetch(`${API_URL}/solve`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
