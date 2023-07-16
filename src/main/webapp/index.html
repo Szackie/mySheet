@@ -151,6 +151,9 @@
 </main>
 
 <script>
+
+    const API_URL=`https://mysheet.onrender.com/api`;
+
      document.getElementById('infobtn').addEventListener('click', function(event) {
         event.preventDefault();
         document.getElementById('initialForm').style.display = 'none';
@@ -165,7 +168,7 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
         var scinkaTextValue = document.getElementById('scinkaText').value;
 
         // Make a POST request to the backend endpoint
-        fetch('http://localhost:8080/api/scinka', {
+        fetch(`${API_URL}/scinka`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -196,7 +199,7 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
             listItem.remove();
 
             // Send a DELETE request to the backend to remove the form
-            fetch('http://localhost:8080/api/scinka/' + waste.id, {
+            fetch(`${API_URL}/scinka/` + waste.id, {
                 method: 'DELETE'
             })
             .then(processOkResponse)
@@ -226,7 +229,7 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
 
 
         // Make a POST request to the backend endpoint
-        fetch('http://localhost:8080/api/formatka', {
+        fetch(`${API_URL}/formatka`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -257,7 +260,7 @@ document.getElementById('addscinkabtn').addEventListener('click', function(event
             listItem.remove();
 
             // Send a DELETE request to the backend to remove the form
-            fetch('http://localhost:8080/api/formatka/' + f.id, {
+            fetch(`${API_URL}/formatka/` + f.id, {
                 method: 'DELETE'
             })
             .then(processOkResponse)
@@ -283,7 +286,7 @@ document.getElementById('liczbtn').addEventListener('click', function(event) {
     var formatkaTextValue = document.getElementById('formatkaText').value;
 
     // Make a GET request to the backend endpoint
-    fetch('http://localhost:8080/api/solve', {
+    fetch(`${API_URL}/solve', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -316,7 +319,7 @@ window.addEventListener('beforeunload', resetData());
 var resetButton=document.getElementById('resetbtn'); //sprobować bez tego
 resetButton.addEventListener('click',resetData());
 function resetData(){
-    fetch('http://localhost:8080/api/reset',{
+    fetch(`${API_URL}/reset`,{
         method: 'DELETE'
     }).then(processOkResponse)
     .catch(console.warn);
