@@ -1,8 +1,10 @@
 package form.szackie;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +19,15 @@ public class Servlet {
 
     Service service;
 
-//ŚCINKI
+    private final HttpSession httpSession;
+
+    @Autowired
+    public Servlet(HttpSession httpSession) {
+        this.httpSession = httpSession;
+    }
 
     @PostMapping("/scinka")
-    ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
+    public ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
         String str = wasteText.get("name");
         List<Form> newWastes = Service.tokenizer(str, 2);
         availableForms.addAll(newWastes);
@@ -28,7 +35,7 @@ public class Servlet {
     }
 
     @DeleteMapping("/scinka/{id}")
-    ResponseEntity<List<Form>> removeWaste(@PathVariable int id) {
+    public ResponseEntity<List<Form>> removeWaste(@PathVariable int id) {
         if (availableForms == null)
             return ResponseEntity.notFound().build();
         for (int i = 0; i < availableForms.size(); i++) {
@@ -40,10 +47,8 @@ public class Servlet {
         return ResponseEntity.ok(availableForms);
     }
 
-//FORMATKI
-
     @PostMapping("/formatka")
-    ResponseEntity<List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
+    public ResponseEntity<List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
         String str = formText.get("name");
         List<Form> newForms = Service.tokenizer(str, 1);
         formsToCreate.addAll(newForms);
@@ -51,7 +56,7 @@ public class Servlet {
     }
 
     @DeleteMapping("/formatka/{id}")
-    ResponseEntity<List<Form>> removeForm(@PathVariable int id) {
+    public ResponseEntity<List<Form>> removeForm(@PathVariable int id) {
         if (formsToCreate == null)
             return ResponseEntity.notFound().build();
         for (int i = 0; i < formsToCreate.size(); i++) {
@@ -64,23 +69,21 @@ public class Servlet {
     }
 
     @GetMapping("/solve")
-
-    public ResponseEntity<Service> solution(){
-        service=new Service(availableForms,formsToCreate);
+    public ResponseEntity<Service> solution() {
+        service = new Service(availableForms, formsToCreate);
         var result = service.solve();
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/reset")
-    public ResponseEntity<?> removeAllData(){
-        if(formsToCreate!=null)
-        formsToCreate.clear();
-        if(availableForms!=null)
-        availableForms.clear();
-        if(service!=null)
-        service.reset();
+    public ResponseEntity<?> removeAllData() {
+        if (formsToCreate != null)
+            formsToCreate.clear();
+        if (availableForms != null)
+            availableForms.clear();
+        if (service != null)
+            service.reset();
 
         return ResponseEntity.ok().build();
     }
-
 }
