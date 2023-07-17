@@ -3,6 +3,9 @@ package form.szackie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,11 +60,20 @@ public class Servlet {
     }
 
     @DeleteMapping("/reset")
-    public ResponseEntity<?> removeAllData() {
+    public ResponseEntity<?> removeAllData(HttpServletRequest request, HttpServletResponse response) {
         availableForms.clear();
         formsToCreate.clear();
         if (service != null)
             service.reset();
+
+        // Usunięcie plików cookie sesji
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+            }
+        }
 
         return ResponseEntity.ok().build();
     }
