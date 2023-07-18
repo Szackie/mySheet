@@ -3,9 +3,6 @@ package form.szackie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +17,8 @@ public class Servlet {
 
     Service service;
 
+//ŚCINKI
+
     @PostMapping("/scinka")
     ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
         String str = wasteText.get("name");
@@ -30,11 +29,18 @@ public class Servlet {
 
     @DeleteMapping("/scinka/{id}")
     ResponseEntity<List<Form>> removeWaste(@PathVariable int id) {
-        availableForms = availableForms.stream()
-                .filter(form -> form.getId() != id)
-                .collect(Collectors.toList());
+        if (availableForms == null)
+            return ResponseEntity.notFound().build();
+        for (int i = 0; i < availableForms.size(); i++) {
+            if (availableForms.get(i).getId() == id) {
+                availableForms.remove(i);
+                break;
+            }
+        }
         return ResponseEntity.ok(availableForms);
     }
+
+//FORMATKI
 
     @PostMapping("/formatka")
     ResponseEntity<List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
@@ -46,35 +52,35 @@ public class Servlet {
 
     @DeleteMapping("/formatka/{id}")
     ResponseEntity<List<Form>> removeForm(@PathVariable int id) {
-        formsToCreate = formsToCreate.stream()
-                .filter(form -> form.getId() != id)
-                .collect(Collectors.toList());
+        if (formsToCreate == null)
+            return ResponseEntity.notFound().build();
+        for (int i = 0; i < formsToCreate.size(); i++) {
+            if (formsToCreate.get(i).getId() == id) {
+                formsToCreate.remove(i);
+                break;
+            }
+        }
         return ResponseEntity.ok(formsToCreate);
     }
 
     @GetMapping("/solve")
-    public ResponseEntity<Service> solution() {
-        service = new Service(availableForms, formsToCreate);
+
+    public ResponseEntity<Service> solution(){
+        service=new Service(availableForms,formsToCreate);
         var result = service.solve();
         return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/reset")
-    public ResponseEntity<?> removeAllData(HttpServletRequest request, HttpServletResponse response) {
-        availableForms.clear();
+    public ResponseEntity<?> removeAllData(){
+        if(formsToCreate!=null)
         formsToCreate.clear();
-        if (service != null)
-            service.reset();
-
-        // Usunięcie plików cookie sesji
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-            }
-        }
+        if(availableForms!=null)
+        availableForms.clear();
+        if(service!=null)
+        service.reset();
 
         return ResponseEntity.ok().build();
     }
+
 }
