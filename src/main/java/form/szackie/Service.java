@@ -23,6 +23,7 @@ public class Service {
 
     public List<Form> expandList() {
 
+        List<Form> temp=new ArrayList<>();
         for (int i = 0; i < newFormsList.size(); i++) {
 
             int quantity = newFormsList.get(i).getQuantity();
@@ -36,9 +37,9 @@ public class Service {
         return newFormsList;
     }
 
-    public Service solve() {
+    public Solution solve() {
 
-        this.newFormsList = expandList();
+        newFormsList = expandList();
 
         List<Form> resultList = new ArrayList<>();
 
@@ -66,7 +67,6 @@ public class Service {
                         resultList.get(1).setParentID(newWastesList.get(i).getParentID());
                     }
 
-
                     newFormsList.get(j).setWasteID(newWastesList.get(i).getParentID());
                     newFormsList.get(j).setDone(true);
                     newWastesList.get(i).setUsed(true);
@@ -75,16 +75,14 @@ public class Service {
                         newWastesList.add(i + 1, setWidthDepth(resultList.get(1)));
                     if (resultList.get(0).getWidth() > 0 && resultList.get(0).getDepth() > 0)
                         newWastesList.add(i + 1, setWidthDepth(resultList.get(0)));
-
-
                 }
 
             }
             i++;
         }
 
-
-        System.out.println("Zrobione formatki: ");
+//
+//        System.out.println("Zrobione formatki: ");
         for (Form f : newFormsList) {
             if (f.isDone()) {
                 setWidthDepth(f);
@@ -92,29 +90,29 @@ public class Service {
             }
         }
         collapseList(doneList);
-        for (Form f : doneList) {
-            System.out.println(f);
-        }
-        System.out.println("Użyte ścinki: ");
+//        for (Form f : doneList) {
+//            System.out.println(f);
+//        }
+//        System.out.println("Użyte ścinki: ");
         for (Form w : newWastesList) {
             if (w.isUsed() && !w.isCutted()) {
                 usedList.add(w);
             }
         }
-        for (Form w : usedList) {
-            System.out.println(w);
-        }
-        System.out.println("nWL: ");
+//        for (Form w : usedList) {
+//            System.out.println(w);
+//        }
+//        System.out.println("nWL: ");
         for (int q = 0; q < newWastesList.size(); q++) {
             if (newWastesList.get(q).isCutted()) {
                 newWastesList.remove(q);
                 q--;
             }
         }
-
+        newFormsList.clear();
+        newWastesList.clear();
 //       collapseList(newFormsList);
-
-        return new Service(usedList, doneList);
+        return new Solution(usedList, doneList);
     }
 
     public void collapseList(List<Form> list) {
@@ -201,6 +199,9 @@ public class Service {
     public Service(List<Form> availableForms, List<Form> desiredForms) {
         this.doneList = new ArrayList<>();
         this.usedList = new ArrayList<>();
+        this.newFormsList=new ArrayList<>();
+        this.newWastesList=new ArrayList<>();
+
         for (int z = 0; z < availableForms.size(); z++)
             availableForms.set(z, setWidthDepth(availableForms.get(z)));
         for (int z = 0; z < desiredForms.size(); z++)
@@ -209,8 +210,8 @@ public class Service {
         var n = sortAreaAsc(desiredForms);
 
         Collections.reverse(n);
-        this.newWastesList = sortAreaAsc(availableForms);
-        this.newFormsList = n;
+        this.newWastesList.addAll(sortAreaAsc(availableForms));
+        this.newFormsList.addAll( n);
         Form zero = new Form(0, 0);
         zero.setComparator(0);
         zero.setUsed(true);
@@ -221,10 +222,9 @@ public class Service {
 
     public static List<Form> tokenizer(String text, int type) {
 
-        Pattern pattern = Pattern.compile("-?\\d+"); // Wzorzec dla liczby całkowitej(MOżE być ujemna!!!)
+        Pattern pattern = Pattern.compile("-?\\d+"); //fixme Wzorzec dla liczby całkowitej(MOżE być ujemna!!!)
         Matcher matcher = pattern.matcher(text);
         List<Form> list = new ArrayList<>();
-
 
         int width;
         int depth;
@@ -244,6 +244,7 @@ public class Service {
                 if (matcher.find()) {
                     quantity = Integer.parseInt(matcher.group());
                 }
+                if(width>0&&depth>0&&quantity>0)
                 list.add(new Form(width, depth, quantity));
             }
         } else {
@@ -257,6 +258,7 @@ public class Service {
                     depth = Integer.parseInt(matcher.group());
                     quantity = 1;
                 }
+                if(width>0&&depth>0)
                 list.add(new Form(width, depth, quantity));
             }
 
