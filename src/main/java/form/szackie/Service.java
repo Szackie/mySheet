@@ -155,11 +155,9 @@ public class Service {
     }
 
     public Service(List<Form> availableForms, List<Form> desiredForms) {
-
         sortAreaAsc(desiredForms);
         Collections.reverse(desiredForms);
         sortAreaAsc(availableForms);
-
         for (int z = 0; z < availableForms.size(); z++)
             this.newWastesList.add(z, makeCopy(availableForms.get(z)));
         for (int z = 0; z < desiredForms.size(); z++)
