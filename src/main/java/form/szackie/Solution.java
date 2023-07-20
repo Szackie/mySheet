@@ -11,10 +11,12 @@ public class Solution {
         this.newFormsList = doneList;
     }
 
+    @SuppressWarnings("unused")
     public List<Form> getNewWastesList() {
         return newWastesList;
     }
 
+    @SuppressWarnings("unused")
     public List<Form> getNewFormsList() {
         return newFormsList;
     }

@@ -6,9 +6,9 @@ public class Form {
     private static int nextId = 1;
     private int parentID = -1;  // only for wastes
     private int wasteID = -1; // only for forms
-    private int id;
-    private int depth;
-    private int width;
+    private final int id;
+    private final int depth;
+    private final int width;
     private int quantity;
     private boolean used = false;
     private boolean done = false;
@@ -38,11 +38,6 @@ public class Form {
     public int getId() {
         return id;
     }
-
-    private void setId(int id) {
-        this.id = getNextId();
-    }
-
 
     public int getParentID() {
         return parentID;
@@ -101,10 +96,7 @@ public class Form {
     public boolean equals(Object o) {
         if (!(o instanceof Form))
             return false;
-        if (((Form) o).getId() != this.id)
-            return false;
-
-        return true;
+        return ((Form) o).getId() == this.id;
     }
 
     @Override
@@ -121,16 +113,8 @@ public class Form {
         return depth;
     }
 
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
     public int getWidth() {
         return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
     }
 
     public int getQuantity() {

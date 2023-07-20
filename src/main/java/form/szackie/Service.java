@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
 //fixme uporządkować kod, wyrzucić niepotrzebne listy( naprawić dodawanie po wykonaniu), naprawić collapselist
 
 public class Service {
-    private List<Form> newWastesList = new ArrayList<>();
+    private final List<Form> newWastesList = new ArrayList<>();
     private List<Form> newFormsList = new ArrayList<>();
-    private List<Form> doneList = new ArrayList<>();
-    private List<Form> usedList = new ArrayList<>();
+    private final List<Form> doneList = new ArrayList<>();
+    private final List<Form> usedList = new ArrayList<>();
 
     public List<Form> expandList() {
 
@@ -40,13 +40,13 @@ public class Service {
         int i = 0;
         while (i < newWastesList.size()) {
 
-            for (int j = 0; j < newFormsList.size(); j++) {
+            for (Form form : newFormsList) {
 
                 resultList.clear();
 
-                if (fits(newWastesList.get(i), newFormsList.get(j)) && !newWastesList.get(i).isUsed() && !newFormsList.get(j).isDone()) {
-                    if (optimalCut(newWastesList.get(i), newFormsList.get(j)) != null)
-                        resultList.addAll(optimalCut(newWastesList.get(i), newFormsList.get(j)));
+                if (fits(newWastesList.get(i), form) && !newWastesList.get(i).isUsed() && !form.isDone()) {
+                    if (optimalCut(newWastesList.get(i), form) != null)
+                        resultList.addAll(optimalCut(newWastesList.get(i), form));
 
                     resultList.get(0).setCutted(true);
                     resultList.get(1).setCutted(true);
@@ -60,8 +60,8 @@ public class Service {
                         resultList.get(1).setParentID(newWastesList.get(i).getParentID());
                     }
 
-                    newFormsList.get(j).setWasteID(newWastesList.get(i).getParentID());
-                    newFormsList.get(j).setDone(true);
+                    form.setWasteID(newWastesList.get(i).getParentID());
+                    form.setDone(true);
                     newWastesList.get(i).setUsed(true);
 
                     if (resultList.get(1).getWidth() > 0 && resultList.get(1).getDepth() > 0)
@@ -115,10 +115,7 @@ public class Service {
 
     public boolean fits(Form biggerForm, Form smallerForm) {
 
-        if (biggerForm.getDepth() >= smallerForm.getDepth() && biggerForm.getWidth() >= smallerForm.getWidth() && biggerForm.getWidth() > 0 && biggerForm.getDepth() > 0 && smallerForm.getWidth() > 0 && smallerForm.getDepth() > 0)
-            return true;
-
-        return false;
+        return biggerForm.getDepth() >= smallerForm.getDepth() && biggerForm.getWidth() >= smallerForm.getWidth() && biggerForm.getWidth() > 0 && biggerForm.getDepth() > 0 && smallerForm.getWidth() > 0 && smallerForm.getDepth() > 0;
     }
 
     public List<Form> optimalCut(Form existingForm, Form formToCreate) {
@@ -158,13 +155,6 @@ public class Service {
     }
 
     public Service(List<Form> availableForms, List<Form> desiredForms) {
-        doneList.clear();
-
-        usedList.clear();
-
-        newWastesList.clear();
-
-        newFormsList.clear();
 
         sortAreaAsc(desiredForms);
         Collections.reverse(desiredForms);
@@ -199,7 +189,6 @@ public class Service {
 
         if (type == 1) {
             while (matcher.find()) {
-                width = 0;
                 depth = 0;
                 quantity = 0;
 
@@ -216,7 +205,6 @@ public class Service {
             }
         } else {
             while (matcher.find()) {
-                width = 0;
                 depth = 0;
                 quantity = 0;
                 width = Integer.parseInt(matcher.group());
@@ -233,37 +221,6 @@ public class Service {
         return list;
     }
 
-    public List<Form> getNewWastesList() {
-        return newWastesList;
-    }
-
-    public void setNewWastesList(List<Form> newWastesList) {
-        this.newWastesList = newWastesList;
-    }
-
-    public List<Form> getNewFormsList() {
-        return newFormsList;
-    }
-
-    public void setNewFormsList(List<Form> newFormsList) {
-        this.newFormsList = newFormsList;
-    }
-
-    public List<Form> getDoneList() {
-        return doneList;
-    }
-
-    public void setDoneList(List<Form> doneList) {
-        this.doneList = doneList;
-    }
-
-    public List<Form> getUsedList() {
-        return usedList;
-    }
-
-    public void setUsedList(List<Form> usedList) {
-        this.usedList = usedList;
-    }
 
     public void reset() {
 

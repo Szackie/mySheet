@@ -9,15 +9,16 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
+@SuppressWarnings("unused")
 public class Servlet {
 
-    private List<Form> availableForms = new ArrayList<>();
-    private List<Form> formsToCreate = new ArrayList<>();
+    private final List<Form> availableForms = new ArrayList<>();
+    private final List<Form> formsToCreate = new ArrayList<>();
 
     private Service service;
 
 //ŚCINKI
-
+@SuppressWarnings("unused")
     @PostMapping("/scinka")
     ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
         String str = wasteText.get("name");
@@ -25,11 +26,9 @@ public class Servlet {
         availableForms.addAll(newWastes);
         return ResponseEntity.ok(availableForms);
     }
-
+    @SuppressWarnings("unused")
     @DeleteMapping("/scinka/{id}")
     ResponseEntity<List<Form>> removeWaste(@PathVariable int id) {
-        if (availableForms == null)
-            return ResponseEntity.notFound().build();
         for (int i = 0; i < availableForms.size(); i++) {
             if (availableForms.get(i).getId() == id) {
                 availableForms.remove(i);
@@ -40,7 +39,7 @@ public class Servlet {
     }
 
 //FORMATKI
-
+@SuppressWarnings("unused")
     @PostMapping("/formatka")
     ResponseEntity<List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
         String str = formText.get("name");
@@ -48,11 +47,9 @@ public class Servlet {
         this.formsToCreate.addAll(newForms);
         return ResponseEntity.ok(this.formsToCreate);
     }
-
+    @SuppressWarnings("unused")
     @DeleteMapping("/formatka/{id}")
     ResponseEntity<List<Form>> removeForm(@PathVariable int id) {
-        if (formsToCreate == null)
-            return ResponseEntity.notFound().build();
         for (int i = 0; i < formsToCreate.size(); i++) {
             if (formsToCreate.get(i).getId() == id) {
                 formsToCreate.remove(i);
@@ -63,7 +60,7 @@ public class Servlet {
     }
 
     @GetMapping("/solve")
-
+    @SuppressWarnings("unused")
     public ResponseEntity<Solution> solution() {
         service = new Service(availableForms, formsToCreate);
 
@@ -71,7 +68,7 @@ public class Servlet {
 
         return ResponseEntity.ok(result);
     }
-
+    @SuppressWarnings("unused")
     @DeleteMapping("/reset")
     public ResponseEntity<?> removeAllData() {
         if (formsToCreate != null)
