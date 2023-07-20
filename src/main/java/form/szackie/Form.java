@@ -1,18 +1,17 @@
 package form.szackie;
 
 
-
 public class Form {
 
-    private static int nextId=1;
-    private int parentID=-1;  // only for wastes
-    private int wasteID=-1; // only for forms
+    private static int nextId = 1;
+    private int parentID = -1;  // only for wastes
+    private int wasteID = -1; // only for forms
     private int id;
     private int depth;
     private int width;
     private int quantity;
-    private boolean used=false;
-    private boolean done=false;
+    private boolean used = false;
+    private boolean done = false;
 
     public boolean isDone() {
         return done;
@@ -29,8 +28,6 @@ public class Form {
     public void setUsed(boolean used) {
         this.used = used;
     }
-
-
 
 
     public static int getNextId() {
@@ -72,14 +69,14 @@ public class Form {
         this.cutted = cutted;
     }
 
-    private boolean cutted=false;
+    private boolean cutted = false;
 
     public Form(int width, int depth) {
-        this.id=getNextId();
-        if(width>depth) {
+        this.id = getNextId();
+        if (width > depth) {
             this.width = depth;
-            this.depth=width;
-        }else {
+            this.depth = width;
+        } else {
             this.depth = depth;
             this.width = width;
         }
@@ -88,11 +85,11 @@ public class Form {
     }
 
     public Form(int width, int depth, int quantity) {
-        this.id=getNextId();
-        if(width>depth) {
+        this.id = getNextId();
+        if (width > depth) {
             this.width = depth;
-            this.depth=width;
-        }else {
+            this.depth = width;
+        } else {
             this.depth = depth;
             this.width = width;
         }
@@ -101,23 +98,23 @@ public class Form {
     }
 
     @Override
-public boolean equals(Object o){
-    if(!(o instanceof Form))
-        return false;
-    if(((Form) o).getId()!=this.id)
-        return false;
+    public boolean equals(Object o) {
+        if (!(o instanceof Form))
+            return false;
+        if (((Form) o).getId() != this.id)
+            return false;
 
-    return true;
-}
+        return true;
+    }
+
     @Override
     public String toString() {
-        return id+
+        return id +
                 ". " + depth +
                 " x " + width +
                 ", ilość: " + quantity +
                 '}';
     }
-
 
 
     public int getDepth() {

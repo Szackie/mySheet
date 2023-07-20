@@ -90,10 +90,10 @@
 
         </div>
         <div id="waste">
-            <h1>Ścinki</h1>
-            <p><input id="scinkaText" class="pure-input-rounded pure-u-1" style="height: 34px ;background: rgb(211, 211, 211); color:black;" name="name" placeholder="scinkaText">
+            <h1>Dostępny materiał</h1>
+            <p><input id="scinkaText" class="pure-input-rounded pure-u-1" style="height: 34px ;background: rgb(211, 211, 211); color:black;" name="name" placeholder="Lista ścinek">
 
-                <button id="addscinkabtn" class="pure-button pure-button-primary pure-u-1">Dodaj ścinki</button>
+                <button id="addscinkabtn" class="pure-button pure-button-primary pure-u-1">Dodaj</button>
             </p>
             <fieldset id="allWastesL">
                 <legend>Dodane</legend>
@@ -106,8 +106,8 @@
         </div>
         <div id="newform">
             <h1>Formatki</h1>
-            <p><input id="formatkaText" class="pure-input-rounded pure-u-1" style="height: 34px ;background: rgb(211, 211, 211); color:black;" name="name" placeholder="formatkaText">
-                <button id="addformatkabtn" class="pure-button pure-button-primary pure-u-1">Dodaj formatki</button>
+            <p><input id="formatkaText" class="pure-input-rounded pure-u-1" style="height: 34px ;background: rgb(211, 211, 211); color:black;" name="name" placeholder="Lista formatek">
+                <button id="addformatkabtn" class="pure-button pure-button-primary pure-u-1">Dodaj</button>
                 <button id="liczbtn" class="pure-button pure-button-primary pure-u-1-4" >Wykonaj</button>
             </p>
             <fieldset id="allFormsL">
@@ -132,15 +132,15 @@
             <p>Nesting estimator</p>
         </div>
         <div id="nav">
-            <p><button id="infobtn" class ="pure-button pure-button-primary pure-u-1" style="background-color: rgb(0, 4, 75);">Info</button></p><br>
+            <p><button id="infobtn" class ="pure-button pure-button-primary pure-u-1" style="background-color: rgb(0, 4, 75);">Wróć</button></p><br>
             <p><button id="resetbtn" class ="pure-button pure-button-primary pure-u-1"style="background-color: rgb(0, 4, 75);">Reset</button></p>
 
         </div>
         <div id="waste"style="      line-height: 25px;">
             <h1>Instrukcja</h1>
-            <p> 1. Wklej listę z wymiarami dostępnych płyt. Wymiary oddziel dowolnymi znakami.UWAGA: nie podawaj ilości. Prawidłowy format to *szerokość1* *długość1* *szerokość2* *długość2* *szerokość3* *długość3* itd.</p>
-            <p>2. Wklej listę z wymiarami detali do wykonania. Wymiary oraz ilość oddziel dowolnymi znakami. UWAGA: Prawidłowy format: *szerokość1* *długość1* *ILOŚĆ1* *szerokość2* *długość2* *ILOŚĆ2* *szerokość3* *długość3* *ILOŚĆ3* itd. </p>
-            <p> 3. Kliknij przycisk "wykonaj". Program wyświetli wówczas możliwe do wykonania elemety. Uwaga: Program wykorzystuje zachowawczy algorytm nestingowy. Nie ma możliwości, żeby wykonał awykonalny detal, ale może się zdarzyć, że nie wyświetli wszystkich możliwych do wykonania elementów</p>
+            <p> 1. Wklej listę z wymiarami dostępnych płyt i detali. Wymiary i ilości oddziel dowolnymi znakami i kliknij "Dodaj". <p>  UWAGA 1: </p>     Nie podawaj ilości w oknie Lista ścinek. Prawidłowy format to *szerokość1* x *długość1*    *szerokość2* x *długość2* itd.</p>
+            <p>     UWAGA 2:</p>Podawaj ilości w oknie Lista Formatek. Prawidłowy format: *szerokość1* x *długość1* x *ILOŚĆ1*   *szerokość2* x *długość2* x *ILOŚĆ2*  itd. </p>
+            <p> 2. Kliknij przycisk "wykonaj". Program wyświetli wówczas możliwe do wykonania elemety. <p> Aplikacja wykorzystuje szybki algorytm nestingowy. W skrajnych przypadkach istnieje możliwość, że nie wyświetli wszystkich możliwych do zrobienia elementów, ale nigdy nie wykona awykonalnego detalu</p></p>
         </div>
 
 
@@ -154,8 +154,8 @@
 
 <script>
 
-    const API_URL=`https://mysheet.onrender.com/api`;
-  // const API_URL=`http://localhost:8080/api`;
+    //  const API_URL=`https://mysheet.onrender.com/api`;
+ const API_URL=`http://localhost:8080/api`;
 
 
      document.getElementById('infobtn').addEventListener('click', function(event) {

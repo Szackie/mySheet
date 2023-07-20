@@ -9,10 +9,6 @@ public class Solution {
     public Solution(List<Form> usedList, List<Form> doneList) {
         this.newWastesList = usedList;
         this.newFormsList = doneList;
-        System.out.println("/solution");
-        for (Form f : this.newFormsList) {
-            System.out.println(f);
-        }
     }
 
     public List<Form> getNewWastesList() {
