@@ -11,10 +11,10 @@ import java.util.regex.Pattern;
 //fixme uporządkować kod, wyrzucić niepotrzebne listy( naprawić dodawanie po wykonaniu), naprawić collapselist
 
 public class Service {
-    private List<Form> newWastesList= new ArrayList<>();
-    private List<Form> newFormsList= new ArrayList<>();
-    private List<Form> doneList= new ArrayList<>();
-    private List<Form> usedList= new ArrayList<>();
+    private List<Form> newWastesList = new ArrayList<>();
+    private List<Form> newFormsList = new ArrayList<>();
+    private List<Form> doneList = new ArrayList<>();
+    private List<Form> usedList = new ArrayList<>();
 
     public List<Form> expandList() {
 
@@ -33,22 +33,12 @@ public class Service {
 
     public Solution solve() {
 
-        System.out.println("/przed expand list lista dodanych formatek");
-        for (Form f : this.newFormsList) {
-            System.out.println(f);
-        }
         newFormsList = expandList();
 
-
-        System.out.println("/expand list lista dodanych formatek");
-        for (Form f : this.newFormsList) {
-            System.out.println(f);
-        }
         List<Form> resultList = new ArrayList<>();
 
         int i = 0;
         while (i < newWastesList.size()) {
-
 
             for (int j = 0; j < newFormsList.size(); j++) {
 
@@ -84,49 +74,28 @@ public class Service {
             i++;
         }
 
-//
-        System.out.println("Zrobione formatki przed collapse: ");
         for (Form f : newFormsList) {
             if (f.isDone()) {
 
                 doneList.add(f);
 
-                System.out.println(f);
             }
         }
 
         collapseList(doneList);
 
-        System.out.println("Zrobione formatki PO COLLAPSE: ");
-        for (Form f : doneList) {
-
-
-
-                System.out.println(doneList);
-
-        }
-//        for (Form f : doneList) {
-//            System.out.println(f);
-//        }
-//        System.out.println("Użyte ścinki: ");
         for (Form w : newWastesList) {
             if (w.isUsed() && !w.isCutted()) {
                 usedList.add(w);
             }
         }
-//        for (Form w : usedList) {
-//            System.out.println(w);
-//        }
-//        System.out.println("nWL: ");
+
         for (int q = 0; q < newWastesList.size(); q++) {
             if (newWastesList.get(q).isCutted()) {
                 newWastesList.remove(q);
                 q--;
             }
         }
-
-
-//       collapseList(newFormsList);
         return new Solution(usedList, doneList);
     }
 
@@ -187,20 +156,6 @@ public class Service {
         formList.sort(Comparator.comparingInt(f -> f.getWidth() * f.getDepth()));
 
     }
-
-    public int countArea(List<Form> form) {
-        int area = 0;
-        for (Form f : form)
-            area += f.getDepth() * f.getWidth() * f.getQuantity();
-        return area;
-    }
-
-    public boolean fitsBothWays(Form f1, Form f2) {
-        if (f1.getWidth() >= f2.getWidth() && f1.getDepth() >= f2.getDepth() && f1.getWidth() >= f2.getDepth() && f1.getDepth() >= f2.getWidth())
-            return true;
-        return false;
-    }
-
 
     public Service(List<Form> availableForms, List<Form> desiredForms) {
         doneList.clear();
