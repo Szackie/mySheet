@@ -11,19 +11,13 @@ import java.util.regex.Pattern;
 //fixme uporządkować kod, wyrzucić niepotrzebne listy( naprawić dodawanie po wykonaniu), naprawić collapselist
 
 public class Service {
-    private List<Form> newWastesList;
-    private List<Form> newFormsList;
-    private List<Form> doneList;
-    private List<Form> usedList;
-    private List<Form> ZERO = new ArrayList<>();
-
-
-    private List<Integer> indexes = new ArrayList<>();
-
+    private List<Form> newWastesList= new ArrayList<>();
+    private List<Form> newFormsList= new ArrayList<>();
+    private List<Form> doneList= new ArrayList<>();
+    private List<Form> usedList= new ArrayList<>();
 
     public List<Form> expandList() {
 
-        List<Form> temp=new ArrayList<>();
         for (int i = 0; i < newFormsList.size(); i++) {
 
             int quantity = newFormsList.get(i).getQuantity();
@@ -39,8 +33,17 @@ public class Service {
 
     public Solution solve() {
 
+        System.out.println("/przed expand list lista dodanych formatek");
+        for (Form f : this.newFormsList) {
+            System.out.println(f);
+        }
         newFormsList = expandList();
 
+
+        System.out.println("/expand list lista dodanych formatek");
+        for (Form f : this.newFormsList) {
+            System.out.println(f);
+        }
         List<Form> resultList = new ArrayList<>();
 
         int i = 0;
@@ -72,9 +75,9 @@ public class Service {
                     newWastesList.get(i).setUsed(true);
 
                     if (resultList.get(1).getWidth() > 0 && resultList.get(1).getDepth() > 0)
-                        newWastesList.add(i + 1, setWidthDepth(resultList.get(1)));
+                        newWastesList.add(i + 1, resultList.get(1));
                     if (resultList.get(0).getWidth() > 0 && resultList.get(0).getDepth() > 0)
-                        newWastesList.add(i + 1, setWidthDepth(resultList.get(0)));
+                        newWastesList.add(i + 1, resultList.get(0));
                 }
 
             }
@@ -82,14 +85,26 @@ public class Service {
         }
 
 //
-//        System.out.println("Zrobione formatki: ");
+        System.out.println("Zrobione formatki przed collapse: ");
         for (Form f : newFormsList) {
             if (f.isDone()) {
-                setWidthDepth(f);
+
                 doneList.add(f);
+
+                System.out.println(f);
             }
         }
+
         collapseList(doneList);
+
+        System.out.println("Zrobione formatki PO COLLAPSE: ");
+        for (Form f : doneList) {
+
+
+
+                System.out.println(doneList);
+
+        }
 //        for (Form f : doneList) {
 //            System.out.println(f);
 //        }
@@ -109,8 +124,8 @@ public class Service {
                 q--;
             }
         }
-        newFormsList.clear();
-        newWastesList.clear();
+
+
 //       collapseList(newFormsList);
         return new Solution(usedList, doneList);
     }
@@ -130,10 +145,8 @@ public class Service {
     }
 
     public boolean fits(Form biggerForm, Form smallerForm) {
-        Form w = setWidthDepth(biggerForm);
-        Form f = setWidthDepth(smallerForm);
 
-        if (w.getDepth() >= f.getDepth() && w.getWidth() >= f.getWidth() && w.getWidth() > 0 && w.getDepth() > 0 && f.getWidth() > 0 && f.getDepth() > 0)
+        if (biggerForm.getDepth() >= smallerForm.getDepth() && biggerForm.getWidth() >= smallerForm.getWidth() && biggerForm.getWidth() > 0 && biggerForm.getDepth() > 0 && smallerForm.getWidth() > 0 && smallerForm.getDepth() > 0)
             return true;
 
         return false;
@@ -155,31 +168,24 @@ public class Service {
                 firstWaste = new Form(wWidth - fDepth - 6, wDepth);
 
                 secondWaste = new Form(fDepth, wDepth - fWidth - 6);
-                list.add(setWidthDepth(firstWaste));
-                list.add(setWidthDepth(secondWaste));
+                list.add((firstWaste));
+                list.add((secondWaste));
                 return list;
             }
             firstWaste = new Form(wWidth - fWidth - 6, wDepth);
             secondWaste = new Form(fWidth, wDepth - fDepth - 6);
 
-            list.add(setWidthDepth(firstWaste));
-            list.add(setWidthDepth(secondWaste));
+            list.add((firstWaste));
+            list.add((secondWaste));
             return list;
         }
 
         return null;
     }
 
-    public Form setWidthDepth(Form formatka) {
-        if (formatka.getWidth() > formatka.getDepth())
-            return new Form(formatka.getDepth(), formatka.getWidth(), formatka.getQuantity());
-
-        return formatka;
-    }
-
-    public List<Form> sortAreaAsc(List<Form> formList) {
+    public void sortAreaAsc(List<Form> formList) {
         formList.sort(Comparator.comparingInt(f -> f.getWidth() * f.getDepth()));
-        return formList;
+
     }
 
     public int countArea(List<Form> form) {
@@ -197,28 +203,34 @@ public class Service {
 
 
     public Service(List<Form> availableForms, List<Form> desiredForms) {
-        this.doneList = new ArrayList<>();
-        this.usedList = new ArrayList<>();
-        this.newFormsList=new ArrayList<>();
-        this.newWastesList=new ArrayList<>();
+        doneList.clear();
+
+        usedList.clear();
+
+        newWastesList.clear();
+
+        newFormsList.clear();
+
+        sortAreaAsc(desiredForms);
+        Collections.reverse(desiredForms);
+        sortAreaAsc(availableForms);
 
         for (int z = 0; z < availableForms.size(); z++)
-            availableForms.set(z, setWidthDepth(availableForms.get(z)));
+            this.newWastesList.add(z, makeCopy(availableForms.get(z)));
         for (int z = 0; z < desiredForms.size(); z++)
-            desiredForms.set(z, setWidthDepth(desiredForms.get(z)));
+            this.newFormsList.add(z, makeCopy(desiredForms.get(z)));
 
-        var n = sortAreaAsc(desiredForms);
-
-        Collections.reverse(n);
-        this.newWastesList.addAll(sortAreaAsc(availableForms));
-        this.newFormsList.addAll( n);
-        Form zero = new Form(0, 0);
-        zero.setComparator(0);
-        zero.setUsed(true);
-        this.ZERO.add(zero);
-        this.ZERO.add(zero);
     }
 
+    public Form makeCopy(Form form) {
+        Form newForm = new Form(form.getWidth(), form.getDepth(), form.getQuantity());
+        newForm.setCutted(form.isCutted());
+        newForm.setUsed(form.isUsed());
+        newForm.setParentID(form.getParentID());
+        newForm.setDone(form.isDone());
+        newForm.setWasteID(form.getWasteID());
+        return newForm;
+    }
 
     public static List<Form> tokenizer(String text, int type) {
 
@@ -244,8 +256,8 @@ public class Service {
                 if (matcher.find()) {
                     quantity = Integer.parseInt(matcher.group());
                 }
-                if(width>0&&depth>0&&quantity>0)
-                list.add(new Form(width, depth, quantity));
+                if (width > 0 && depth > 0 && quantity > 0)
+                    list.add(new Form(width, depth, quantity));
             }
         } else {
             while (matcher.find()) {
@@ -258,8 +270,8 @@ public class Service {
                     depth = Integer.parseInt(matcher.group());
                     quantity = 1;
                 }
-                if(width>0&&depth>0)
-                list.add(new Form(width, depth, quantity));
+                if (width > 0 && depth > 0)
+                    list.add(new Form(width, depth, quantity));
             }
 
         }

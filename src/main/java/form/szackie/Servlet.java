@@ -25,7 +25,7 @@ public class Servlet {
         List<Form> newWastes = Service.tokenizer(str, 2);
         availableForms.addAll(newWastes);
 
-        System.out.println("/servlet lista dodanych");
+        System.out.println("/servlet lista dodanych formatek");
         for (Form f : this.formsToCreate) {
             System.out.println(f);
         }
@@ -53,6 +53,10 @@ public class Servlet {
         String str = formText.get("name");
         List<Form> newForms = Service.tokenizer(str, 1);
         this.formsToCreate.addAll(newForms);
+        System.out.println("/servlet lista dodanych scinek");
+        for (Form f : this.availableForms) {
+            System.out.println(f);
+        }
         return ResponseEntity.ok(this.formsToCreate);
     }
 

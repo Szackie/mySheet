@@ -3,20 +3,14 @@ package form.szackie;
 
 
 public class Form {
-    private int type;
+
     private static int nextId=1;
     private int parentID=-1;  // only for wastes
     private int wasteID=-1; // only for forms
     private int id;
-    /**
-     * priority- determines the order of creation
-     */
-    private int priority=0;
     private int depth;
     private int width;
     private int quantity;
-    private int area;
-    private int comparator;
     private boolean used=false;
     private boolean done=false;
 
@@ -52,15 +46,6 @@ public class Form {
         this.id = getNextId();
     }
 
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-
 
     public int getParentID() {
         return parentID;
@@ -78,23 +63,6 @@ public class Form {
         this.wasteID = wasteID;
     }
 
-
-
-    public int getComparator() {
-        return comparator;
-    }
-
-    public void setComparator(int comparator) {
-        this.comparator = comparator;
-    }
-
-    public int getArea() {
-        return area;
-    }
-
-    public void setArea(int area) {
-        this.area = area;
-    }
 
     public boolean isCutted() {
         return cutted;
@@ -116,8 +84,7 @@ public class Form {
             this.width = width;
         }
         this.quantity = 1;
-        this.area=width*depth;
-        this.comparator=0;
+
     }
 
     public Form(int width, int depth, int quantity) {
@@ -130,11 +97,10 @@ public class Form {
             this.width = width;
         }
         this.quantity = quantity;
-        this.area=width*depth;
-        this.comparator=0;
+
     }
 
-@Override
+    @Override
 public boolean equals(Object o){
     if(!(o instanceof Form))
         return false;
