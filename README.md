@@ -1,4 +1,4 @@
-# myForm
+# mySheet
 Web application for checking if we have enough materials to create new details.
 
 The program utilizes a simple nesting algorithm for rectangles (with the ability to rotate by 90 degrees). The algorithm selects the largest possible rectangles to execute, and in cases where rotation is possible, it chooses the option that generates a thinner scrap.
