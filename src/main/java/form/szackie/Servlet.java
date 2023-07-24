@@ -12,8 +12,8 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class Servlet {
 
-    private final List<Form> availableForms = new ArrayList<>();
-    private final List<Form> formsToCreate = new ArrayList<>();
+    private final Solution solution = new Solution();
+
 
     private Service service;
 
@@ -23,19 +23,19 @@ public class Servlet {
     ResponseEntity<List<Form>> addNewWaste(@RequestBody Map<String, String> wasteText) {
         String str = wasteText.get("name");
         List<Form> newWastes = Service.tokenizer(str, 2);
-        availableForms.addAll(newWastes);
-        return ResponseEntity.ok(availableForms);
+        solution.getNewWastesList().addAll(newWastes);
+        return ResponseEntity.ok(solution.getNewWastesList());
     }
     @SuppressWarnings("unused")
     @DeleteMapping("/scinka/{id}")
     ResponseEntity<List<Form>> removeWaste(@PathVariable int id) {
-        for (int i = 0; i < availableForms.size(); i++) {
-            if (availableForms.get(i).getId() == id) {
-                availableForms.remove(i);
+        for (int i = 0; i < solution.getNewWastesList().size(); i++) {
+            if (solution.getNewWastesList().get(i).getId() == id) {
+                solution.getNewWastesList().remove(i);
                 break;
             }
         }
-        return ResponseEntity.ok(availableForms);
+        return ResponseEntity.ok(solution.getNewWastesList());
     }
 
 //FORMATKI
@@ -44,25 +44,25 @@ public class Servlet {
     ResponseEntity<List<Form>> addNewForm(@RequestBody Map<String, String> formText) {
         String str = formText.get("name");
         List<Form> newForms = Service.tokenizer(str, 1);
-        this.formsToCreate.addAll(newForms);
-        return ResponseEntity.ok(this.formsToCreate);
+        this.solution.getNewFormsList().addAll(newForms);
+        return ResponseEntity.ok(this.solution.getNewFormsList());
     }
     @SuppressWarnings("unused")
     @DeleteMapping("/formatka/{id}")
     ResponseEntity<List<Form>> removeForm(@PathVariable int id) {
-        for (int i = 0; i < formsToCreate.size(); i++) {
-            if (formsToCreate.get(i).getId() == id) {
-                formsToCreate.remove(i);
+        for (int i = 0; i < solution.getNewFormsList().size(); i++) {
+            if (solution.getNewFormsList().get(i).getId() == id) {
+                solution.getNewFormsList().remove(i);
                 break;
             }
         }
-        return ResponseEntity.ok(formsToCreate);
+        return ResponseEntity.ok(solution.getNewFormsList());
     }
 
     @GetMapping("/solve")
     @SuppressWarnings("unused")
     public ResponseEntity<Solution> solution() {
-        service = new Service(availableForms, formsToCreate);
+        service = new Service(solution.getNewWastesList(), solution.getNewFormsList());
 
         var result = service.solve();
 
@@ -71,10 +71,10 @@ public class Servlet {
     @SuppressWarnings("unused")
     @DeleteMapping("/reset")
     public ResponseEntity<?> removeAllData() {
-        if (formsToCreate != null)
-            formsToCreate.clear();
-        if (availableForms != null)
-            availableForms.clear();
+        if (solution.getNewFormsList() != null)
+            solution.getNewFormsList().clear();
+        if (solution.getNewWastesList() != null)
+            solution.getNewWastesList().clear();
         if (service != null)
             service.reset();
 
